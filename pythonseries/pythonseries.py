@@ -33,13 +33,13 @@ class Client(object):
 
     def get_host(self):
         """
-            get self.host 
+            get the host from which to get series
         """
         return self.host
 
     def get_user_agent(self):
         """
-            get self.user_agant 
+            get the user agant we set
         """
         return self.user_agent
 
@@ -123,7 +123,13 @@ class Client(object):
         return self.query('shows/unarchive/' + url + '.json', {'token': token})
 
     def shows_characters(self, url, summary=False, id=None):
+        """
+            list the characters of the series
+        """
         params = {'summary': summary}
+        '''
+            to get only One character
+        '''
         if id is not None:
             params['id'] = id
         return self.query('shows/characters/' + url + '.json', params)

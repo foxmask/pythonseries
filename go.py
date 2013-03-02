@@ -62,6 +62,23 @@ def do_action(options):
             data = c.shows_characters(options.characters)
         for character in data['root']['characters']:
             print data['root']['characters'][character]['name']
+    elif options.videos:
+        print "you want to search videos of serie "+options.videos
+        if options.season_video and options.episode_video:
+            data = c.shows_videos(options.videos, options.season_video,
+                                    options.episode_video)
+        elif options.season_video:
+            data = c.shows_videos(options.videos, options.season_video)
+        elif options.episode_video:
+            data = c.shows_videos(options.videos, False, options.episode_video)
+        else:
+            data = c.shows_videos(options.videos)
+
+        #all the data
+        # print data
+        for video in data['root']['videos']:
+            print data['root']['videos'][video]['title'], data['root']['videos'][video]['youtube_id']
+
 
 def main():
     #meme message d'aide en plus concis
@@ -111,6 +128,22 @@ def main():
                      help="display info of THIS character (optional)")
 
     parser.add_option_group(group3)
+
+    group4 = OptionGroup(parser, "Videos handling",
+                        "use --videos <serie> --sv <num> --ev <num>\
+                        to filter episodes you want to search")
+
+    group4.add_option("--videos", dest="videos", action="store",
+                     help="get the video of the given serie")
+
+    group4.add_option("--sv", dest="season_video", action="store",
+                     help="display the list of video of the given season")
+
+    group4.add_option("--ev", dest="episode_video", action="store",
+                     help="display the list of video of the given season")
+
+    parser.add_option_group(group4)
+
 
     (options, args) = parser.parse_args()
     if options.title and options.display\
