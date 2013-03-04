@@ -55,8 +55,15 @@ class Client(object):
     def handle_json_response(self, responses):
         if responses.status_code != 200:
             raise Exception("Wrong status code", responses.status_code)
-        json_data = responses.json()
-        return json_data
+        json_data = {'root':''}
+        try: 
+            json_data = responses.json()
+        except:
+            for error in json_data['root']['errors']:
+                logging.error("Pythonseries: %s" %\
+                              json_data['root']['errors'][error]['content'])
+        return json_data['root']
+
 
     def get_api_status(self):
         return self.query('status.json')
