@@ -1,26 +1,19 @@
 # -*- coding: utf-8 -*-
 from optparse import OptionParser, OptionGroup
 
-import ConfigParser
-import os
-
-from pythonseries.pythonseries import Client
-
-config = ConfigParser.ConfigParser()
-config.read(os.getcwd()+'/series.config')
-c = Client(api_key=config.get('api','key'))
-
-def get_token():
-    """ 
-        get the token of the member
-    """
-    import hashlib
-    hash_pass = hashlib.md5(config.get('auth','password')).hexdigest()
-    #return the token
-    return c.members_auth(config.get('auth','login'), hash_pass)
 
 def do_action(options):
+    #import hashlib
+    import ConfigParser
+    import os
+    
+    config = ConfigParser.ConfigParser()
+    config.read(os.getcwd()+'/series.config')
+    #hash_pass = hashlib.md5(config.get('auth','password')).hexdigest()
 
+    from pythonseries.pythonseries import Client
+    c = Client(api_key=config.get('api','key'))
+    #c.members_auth(config.get('auth','login'), hash_pass)
     data = {}
     if options.title:
         """
@@ -90,8 +83,8 @@ def do_action(options):
                 print data['errors'][error]['content']
         else:
 
-            #all the data
-            #print data
+        #all the data
+        #print data
             for season in data['seasons']:
                 for ep in data['seasons'][season]['episodes']:
                     number = data['seasons'][season]['episodes'][ep]['number']
@@ -103,26 +96,26 @@ def do_action(options):
 #        shows_add wrapper
 #        """
 #        print "you want to add a file to your account"
-#        data = c.shows_add(get_token())
+#        data = c.shows_add()
 #    elif options.remove:
 #        """
 #        shows_remove wrapper
 #        """
 #        print "you want to remove a file to your account"
-#        data = c.shows_remove(get_token())
+#        data = c.shows_remove()
 #    elif options.recommend:
 #        """
 #        shows_recommend wrapper
 #        """        
 #        print "you want to recommend a file to a friend"
-#        data = c.shows_recommend(get_token())
+#        data = c.shows_recommend()
 #        print data
 #    elif options.archive:
 #        """
 #        shows_archive wrapper
 #        """
 #        print "you want to archive a serie"
-#        data = c.shows_archive(get_token())
+#        data = c.shows_archive()
 #        print data
 #    elif options.scrapper:
 #        """
@@ -135,7 +128,7 @@ def do_action(options):
 #        shows_unarchive wrapper
 #        """
 #        print "you want to get out the serie from your archives"
-#        data = c.shows_unarchive(get_token())
+#        data = c.shows_unarchive()
 #        print data
     elif options.chars:
         """
@@ -280,16 +273,6 @@ def do_action(options):
 #        #todo fix the name of the options
 #        data = c.subtitles_show_by_file(options.sub_filename,options.sub_lang)
 #        print data
-    elif options.planning_member:
-        """
-        planning_member wrapper
-        """
-        data = c.planning_member(get_token())
-        for planning in data['planning']:
-            show = data['planning'][planning]['show']
-            number = data['planning'][planning]['number']
-            title = data['planning'][planning]['title'] 
-            print show,number,title
 #    elif options.is_activated:
 #        """
 #        member_is_activated wrapper
@@ -408,11 +391,7 @@ to filter episodes you want to search")
 
     parser.add_option_group(group6)
 
-    group7 = OptionGroup(parser, "*** Planning Member")
-    group7.add_option("--planning_member", action="store_true",
-                      help="display the planning of the member")
-    parser.add_option_group(group7)
-
+    
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -420,8 +399,7 @@ to filter episodes you want to search")
             and options.chars\
             and options.videos\
             and options.sub\
-            and options.last_sub\
-            and options.planning_member:
+            and options.last_sub:
         parser.error("only one option available at a time")
     else:
         do_action(options)

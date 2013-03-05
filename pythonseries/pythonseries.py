@@ -237,37 +237,16 @@ class Client(object):
     def planning_general(self):
         pass
     
-    def planning_member(self, token = None, login = None, unseenOnly = False):
-        url = 'planning/member.json'
-        params = {}
-
-        #Check params
-        if token is None and login is None:
-            raise Exception("You must specify token or login")
-
-        #handle login parameter
-        if login is not None:
-            url = 'planning/member/' + login +  '.json'
-
-        #handle token parameter
-        if token is not None:
-            params['token'] = token
-
-        #handle view parameter
-        if unseenOnly == True:
-            params['view'] = 'unseen'
-
-        return self.query(url, params)
-
+    def planning_member(self):
+        pass
 
     def members_auth(self, login, password):
         """
             get the token to use for future requests
             identify the member with his login/pass on Betaserie
         """
-        params = {'login': login, 'password': password, 'key': self.api_key}
-        url = "members/auth.json"
-        r = requests.get(self.get_host() + url, params=params)
+        params = {'login': login, 'password': password}
+        r = requests.get(self.get_host() + "members/auth.json", params=params)
         re = r.json()
         try:
             token = re['root']['member']['token']
