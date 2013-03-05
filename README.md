@@ -9,6 +9,15 @@ Configuration:
 --------------
 Edit series.config to add your login, password, and key.
 
+```ini
+[auth]
+login=
+password=
+
+[api]
+key=
+```
+
 Running:
 -------
 Then run :
