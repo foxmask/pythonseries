@@ -15,7 +15,7 @@ class Client(object):
     def __init__(self, api_key, user_agent="BetaSeriesPythonClient"):
         """
             init variable
-        """        
+        """
         self.api_key = api_key
         self.user_agent = user_agent
 
@@ -46,7 +46,7 @@ class Client(object):
     def query(self, url, params={}):
         """
             Do a query to the System
-        """        
+        """
         params = params
         params['key'] = self.api_key
         r = requests.get(self.get_host() + url, params=params)
@@ -55,12 +55,12 @@ class Client(object):
     def handle_json_response(self, responses):
         if responses.status_code != 200:
             raise Exception("Wrong status code", responses.status_code)
-        json_data = {'root':''}
-        try: 
+        json_data = {'root': ''}
+        try:
             json_data = responses.json()
         except:
             for error in json_data['root']['errors']:
-                logging.error("Pythonseries: %s" %\
+                logging.error("Pythonseries: %s" % \
                               json_data['root']['errors'][error]['content'])
         return json_data['root']
 
@@ -78,7 +78,7 @@ class Client(object):
 
     def shows_display(self, url):
         """
-            display the details of a given serie 
+            display the details of a given serie
         """
         return self.query('shows/display/' + url + '.json')
 
@@ -110,22 +110,22 @@ class Client(object):
         return self.query('shows/episodes/' + url + '.json', params)
 
     def shows_add(self, url, token):
-        """ 
+        """
             Add the serie to the authenticated member
         """
         return self.query('shows/add/' + url + '.json', {'token': token})
 
     def shows_remove(self, url, token):
-        """ 
+        """
             Remove the serie to the authenticated member
         """
         return self.query('shows/remove/' + url + '.json', {'token': token})
 
     def shows_recommend(self, url, token, friend):
-        """ 
+        """
             Recommend the serie to the authenticated member's friend
         """
-        
+
         return self.query(
             'shows/recommend/' + url + '.json',
             {'token': token, 'friend': friend}
@@ -223,9 +223,13 @@ class Client(object):
 
     def subtitles_show_by_file(self, my_file, language=None):
         """
-            New : you can now get the subtitle directly from the video filename 
+            New : you can now get the subtitle directly from the video filename
         """
+        if not my_file:
+            raise Exception("You have to set a filename to search")
+
         params = {'file': my_file}
+
         language_list = ('vo', 'vf')
         if language is not None:
             if language not in language_list:
@@ -235,30 +239,29 @@ class Client(object):
         return self.query('subtitles/show.json', params)
 
     def planning_general(self):
-        pass
-    
-    def planning_member(self, token = None, login = None, unseenOnly = False):
+        return self.query('planning/general.json')
+
+    def planning_member(self, token=None, login=None, unseenOnly=False):
         url = 'planning/member.json'
         params = {}
 
-        #Check params
+        # Check params
         if token is None and login is None:
             raise Exception("You must specify token or login")
 
-        #handle login parameter
+        # handle login parameter
         if login is not None:
-            url = 'planning/member/' + login +  '.json'
+            url = 'planning/member/' + login + '.json'
 
-        #handle token parameter
+        # handle token parameter
         if token is not None:
             params['token'] = token
 
-        #handle view parameter
+        # handle view parameter
         if unseenOnly == True:
             params['view'] = 'unseen'
 
         return self.query(url, params)
-
 
     def members_auth(self, login, password):
         """
@@ -276,13 +279,13 @@ class Client(object):
             for error in re['root']['errors']:
                 logging.error("Betaseries: %s" %
                               re['root']['errors'][error]['content'])
-    
+
     def member_oauth(self, token):
         """
-            Get the key to user in parameter of 
-            https://www.betaseries.com/oauth?key=<key> 
-            to identify the user without to send a password  
-            The user is redirected on the callback URL you've specified 
+            Get the key to user in parameter of
+            https://www.betaseries.com/oauth?key=<key>
+            to identify the user without to send a password
+            The user is redirected on the callback URL you've specified
         """
         return self.query('members/oauth.json', {'token': token})
 
@@ -297,33 +300,33 @@ class Client(object):
             destroy immediatly the given token
         """
         return self.query('members/destroy.json', {'token': token})
-    
-    def member_infos(self,token=None, login=None, nodata=False, since=None):
+
+    def member_infos(self, token=None, login=None, nodata=False, since=None):
         """
             Return the main info of the authenticated member
-            or from another member (acces vary from the options of the 
+            or from another member (acces vary from the options of the
             private life of the member)
         """
-        url    = 'members/infos.json'
+        url = 'members/infos.json'
         params = {}
 
         # Check params
         if token is None and login is None:
             raise Exception("You must specify token or login")
 
-        #handle login parameter
+        # handle login parameter
         if login is not None:
             url = 'members/infos/' + login + '.json'
 
-        #handle token parameter
+        # handle token parameter
         if token is not None:
             params['token'] = token
 
-        #handle nodata parameter
+        # handle nodata parameter
         if nodata == True:
             params['nodata'] = 1
 
-        #handle since parameter
+        # handle since parameter
         if since is not None:
             if not since.isdigit():
                 raise Exception("Invalid since parameter")

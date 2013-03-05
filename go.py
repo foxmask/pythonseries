@@ -7,17 +7,19 @@ import os
 from pythonseries.pythonseries import Client
 
 config = ConfigParser.ConfigParser()
-config.read(os.getcwd()+'/series.config')
-c = Client(api_key=config.get('api','key'))
+config.read(os.getcwd() + '/series.config')
+c = Client(api_key=config.get('api', 'key'))
+
 
 def get_token():
-    """ 
+    """
         get the token of the member
     """
     import hashlib
-    hash_pass = hashlib.md5(config.get('auth','password')).hexdigest()
-    #return the token
-    return c.members_auth(config.get('auth','login'), hash_pass)
+    hash_pass = hashlib.md5(config.get('auth', 'password')).hexdigest()
+    # return the token
+    return c.members_auth(config.get('auth', 'login'), hash_pass)
+
 
 def do_action(options):
 
@@ -36,68 +38,68 @@ def do_action(options):
         data = c.shows_display(options.display)
         print "Genre:"
         for genre in data['show']['genres'].values():
-            print "-"+genre
-        print "Description: %s"  % data['show']['description']
+            print "-" + genre
+        print "Description: %s" % data['show']['description']
         print "seasons:"
         for season in data['root']['show']['seasons']:
             print season, ' sur ', data['show']['seasons'][season]['episodes']
-        #all the data
-        #print data
+        # all the data
+        # print data
     elif options.name:
-         
+
         """
         shows_episodes wrapper
         """
         print "you want to search serie %s " % options.name
         if options.episode and options.season and options.summary:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     options.episode,
-                                    options.season, 
+                                    options.season,
                                     options.summary)
         elif options.episode and options.season:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     options.season,
                                     options.episode)
         elif options.episode and options.summary:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     None,
                                     options.episode,
                                     options.summary)
         elif options.season and options.summary:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     options.season,
-                                    None, 
+                                    None,
                                     options.summary)
         elif options.season:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     options.season)
         elif options.episode:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     None,
                                     options.episode)
         elif options.summary:
-            data = c.shows_episodes(options.name, 
+            data = c.shows_episodes(options.name,
                                     None,
-                                    None, 
+                                    None,
                                     options.summary)
         else:
             data = c.shows_episodes(options.name, options.episode,
                                     options.season)
-        #oops we try to find a serie that does not exist
+        # oops we try to find a serie that does not exist
         if 'seasons' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
                 print data['errors'][error]['content']
         else:
 
-            #all the data
-            #print data
+            # all the data
+            # print data
             for season in data['seasons']:
                 for ep in data['seasons'][season]['episodes']:
                     number = data['seasons'][season]['episodes'][ep]['number']
                     title = data['seasons'][season]['episodes'][ep]['title']
                     print "Number: {number} Title: {title} ".\
-                    format(number=number,title=title) 
+                    format(number=number, title=title)
 #    elif options.add:
 #        """
 #        shows_add wrapper
@@ -113,7 +115,7 @@ def do_action(options):
 #    elif options.recommend:
 #        """
 #        shows_recommend wrapper
-#        """        
+#        """
 #        print "you want to recommend a file to a friend"
 #        data = c.shows_recommend(get_token())
 #        print data
@@ -144,15 +146,18 @@ def do_action(options):
         print "you want to search characters of the serie {characters}"\
                 .format(characters=options.characters)
         if options.char_summary and options.char_id:
-            data = c.shows_characters(options.characters, options.char_summary,\
+            data = c.shows_characters(options.characters,
+                                      options.char_summary,
                                       options.char_id)
         elif options.char_summary:
             data = c.shows_characters(options.characters, options.char_summary)
         elif options.char_id:
-            data = c.shows_characters(options.characters, False, options.char_id)
+            data = c.shows_characters(options.characters,
+                                      False,
+                                      options.char_id)
         else:
             data = c.shows_characters(options.characters)
-        #oops we try to find a serie that does not exist
+        # oops we try to find a serie that does not exist
         if 'characters' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
@@ -175,155 +180,232 @@ def do_action(options):
         else:
             data = c.shows_videos(options.videos)
 
-        #oops we try to find a serie that does not exist
+        # oops we try to find a serie that does not exist
         if 'videos' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
                 print data['errors'][error]['content']
         else:
-            #all the data
-            #print data
+            # all the data
+            # print data
             print "title %14s - youtube id %10s" % (' ', ' ')
             for video in data['videos']:
-                print "%20s - %10s" %\
+                print "%20s - %10s" % \
                       (data['videos'][video]['title'],
                        data['videos'][video]['youtube_id'])
+
     elif options.last_sub:
         """
         subtitles_last wrapper
         """
         print "you want to see the last subtitles"
         if options.last_sub_lang and options.last_sub_nb:
-            data = c.subtitles_last(options.last_sub_lang, 
+            data = c.subtitles_last(options.last_sub_lang,
                                   options.last_sub_nb)
         elif options.last_sub_lang:
             data = c.subtitles_last(options.last_sub_lang)
         elif options.last_sub_nb:
-            data = c.subtitles_last(None, 
+            data = c.subtitles_last(None,
                                   options.last_sub_nb)
         else:
             data = c.subtitles_last(None, None)
 
-        #oops we try to find a serie that does not exist
+        # oops we try to find a serie that does not exist
         if 'subtitles' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
                 print data['errors'][error]['content']
         else:
-            #all the data
-            #print data
-            print "season %s - episode %s - title %7s - Lg%s- file %14s" %\
-                  (' ', ' ', ' ', ' ', ' ')
+            # all the data
+            # print data
+            print "{season:^10} {ep:^10} {title:^20} {lang} {file:^50}".\
+                format(season='Season',
+                       ep='Episode',
+                       title='Title',
+                       lang='Lang',
+                       file='File')
             for last_sub in data['subtitles']:
-                print "%5s - %5s - %20s - %s - %20s" %\
-                      (data['subtitles'][last_sub]['season'],
-                       data['subtitles'][last_sub]['episode'],
-                       data['subtitles'][last_sub]['title'],
-                       data['subtitles'][last_sub]['language'],
-                       data['subtitles'][last_sub]['file']
-                       )
+                season = data['subtitles'][last_sub]['season']
+                ep = data['subtitles'][last_sub]['episode']
+                title = data['subtitles'][last_sub]['title'],
+                lang = data['subtitles'][last_sub]['language']
+                my_file = data['subtitles'][last_sub]['file']
+                print "{season:<10} {ep:<5} {title:<20} {lang:<5} {file:<50}"\
+                      .format(season=season,
+                             ep=ep,
+                             title=title,
+                             lang=lang,
+                             file=my_file)
     elif options.sub:
         """
         subtitles_show wrapper
         """
-        print "you want to search subtitles of serie "+options.sub
+        print "you want to search subtitles of serie " + options.sub
         if options.sub_lang and options.sub_sv and options.sub_ev:
             data = c.subtitles_show(options.sub,
-                                  options.sub_lang, 
-                                  options.sub_sv, 
+                                  options.sub_lang,
+                                  options.sub_sv,
                                   options.sub_ev)
         elif options.sub_lang and options.sub_sv:
             data = c.subtitles_show(options.sub,
-                                  options.sub_lang, 
+                                  options.sub_lang,
                                   options.sub_sv)
         elif options.sub_lang and options.sub_ev:
             data = c.subtitles_show(options.sub,
                                   options.sub_lang,
-                                  None, 
+                                  None,
                                   options.sub_ev)
         elif options.sub_sv and options.sub_ev:
             data = c.subtitles_show(options.sub,
-                                  None, 
-                                  options.sub_sv, 
+                                  None,
+                                  options.sub_sv,
                                   options.sub_ev)
         elif options.sub_sv:
             data = c.subtitles_show(options.sub,
-                                  None, 
+                                  None,
                                   options.sub_sv)
         elif options.sub_ev:
             data = c.subtitles_show(options.sub,
-                                  None, 
-                                  None, 
+                                  None,
+                                  None,
                                   options.sub_ev)
         else:
             data = c.subtitles_show(options.sub)
 
-        #oops we try to find a serie that does not exist
+        # oops we try to find a serie that does not exist
         if 'subtitles' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
                 print data['errors'][error]['content']
         else:
-            #all the data
-            #print data['subtitles']
-            print "season %s - episode %s - title %14s - Lg%s" %\
-                  (' ', ' ', ' ', ' ')
+            # all the data
+            # print data['subtitles']
+            print "{season:^10} {ep:^10} {lang:^5} {file:^50} {url:^50}".\
+                format(season='Season',
+                       ep='Episode',
+                       lang='Lang',
+                       file='File',
+                       url='URL')
+
+            # print data['subtitles']
+
             for subtitle in data['subtitles']:
-                print "%5s - %5s - %20s - %s" %\
-                      (data['subtitles'][subtitle]['season'],
-                       data['subtitles'][subtitle]['episode'],
-                       data['subtitles'][subtitle]['title'],
-                       data['subtitles'][subtitle]['language']
-                       )
-#    elif options.sub_by_file:
-#        print "you want to get the subtitle from a given filename"
-#        #todo fix the name of the options
-#        data = c.subtitles_show_by_file(options.sub_filename,options.sub_lang)
-#        print data
+                season = data['subtitles'][subtitle]['season']
+                ep = data['subtitles'][subtitle]['episode']
+                language = data['subtitles'][subtitle]['language']
+                my_file = data['subtitles'][subtitle]['file']
+                url = data['subtitles'][subtitle]['url']
+                print "{season:<10} {ep:<5}  {lang:<5} {file:<50} {url:<50}".\
+                      format(season=season,
+                             ep=ep,
+                             lang=language,
+                             file=my_file,
+                             url=url)
+    elif options.sub_by_file:
+        """
+        subtitles_show_by_file wrapper
+        """
+        print "you want to get the subtitle from a given filename" + \
+                options.sub_by_file
+        # todo fix the name of the options
+        data = c.subtitles_show_by_file(options.sub_by_file, options.sub_lang)
+        if 'subtitles' not in data.keys() > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+    elif options.planning_general:
+        """
+        planning_general wrapper
+        """
+        data = c.planning_general()
+        # print the Heading
+        print u"{show:^40} {number:^10} {title:^30}".\
+            format(show='Show', number='Number', title='Title')
+        # print the lines
+        for planning in data['planning']:
+            show = data['planning'][planning]['show']
+            number = data['planning'][planning]['number']
+            title = data['planning'][planning]['title']
+            print u"{show:<40} {number:<10} {title:<30}".\
+                format(show=show, number=number, title=title)
     elif options.planning_member:
         """
         planning_member wrapper
         """
         data = c.planning_member(get_token())
+        # print the Heading
+        print u"{show:^40} {number:^10} {title:^30}".\
+            format(show='Show', number='Number', title='Title')
+        # print the lines
         for planning in data['planning']:
             show = data['planning'][planning]['show']
             number = data['planning'][planning]['number']
-            title = data['planning'][planning]['title'] 
-            print show,number,title
-#    elif options.is_activated:
-#        """
-#        member_is_activated wrapper
-#        """
-#        print "you want to check if the user is autenticated"
-#        #todo : fix the options.token
-#        data = c.member_is_activated(options.token)
-#        print data
-#    elif options.member_destroy:
-#        """
-#        member_destroy wrapper
-#        """
-#        print "you want to destroy immediatly the token " + options.token
-#        data = c.member_destroy(options.token)
+            title = data['planning'][planning]['title']
+            print u"{show:<40} {number:<10} {title:<30}".\
+                format(show=show, number=number, title=title)
+    elif options.is_active:
+        """
+        member_is_active wrapper
+        """
+        print "you want to check if the user is autenticated"
+        # todo : fix the options.token
+        data = c.member_is_active(get_token())
+        if 'token' not in data.keys() > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "Member is active"
+    elif options.member_infos:
+        """
+        member_infos wrapper
+        """
+        print "you want to display the info of " + options.member_infos
+        # todo : manage token + nodata + since
+        data = c.member_infos(login=options.member_infos)
+        if 'member' not in data.keys() > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if data['member']['login'] is None:
+                print "unknow member"
+            else:
+                stats = data['member']['stats']
+                print "Login:" + data['member']['login']
+                print "Avatar:" + data['member']['avatar']
+                print "Stats >>"
+                print "Friends:" + stats['friends']
+                print "Shows: %i" % stats['shows']
+                print "Seasons: %i" % stats['seasons']
+                print "Episodes: %i" % stats['episodes']
+                print "Progress:" + stats['progress']
+                print "ToWatch: %i" % stats['episodes_to_watch']
+                print "TimeOnTV: %i" % stats['time_on_tv']
+                print "TimeToSpend: %i" % stats['time_to_spend']
+                for show in data['member']['shows']:
+                    print "url " + data['member']['shows'][show]['url'], \
+                          "title " + data['member']['shows'][show]['title']
 
 
 def main():
-    #meme message d'aide en plus concis
-    #usage = "%prog --title my_title\n\
+    # meme message d'aide en plus concis
+    # usage = "%prog --title my_title\n\
     #        --episodes --episode n --season m"
     parser = OptionParser()
 
     group0 = OptionGroup(parser, "*** Search series")
-    group0.add_option("--title",  dest="title", type="string",
+    group0.add_option("--title", dest="title", type="string",
                       help="make a search by title")
     parser.add_option_group(group0)
-    
-    #group the options for handling Display of series parameters
+
+    # group the options for handling Display of series parameters
     group1 = OptionGroup(parser, "*** Details of series")
     group1.add_option("--display", dest="display", action="store",
                      help="the name of the given serie")
     parser.add_option_group(group1)
 
-    #group the options for handling Episodes parameters
+    # group the options for handling Episodes parameters
     group2 = OptionGroup(parser, "*** Episodes",
                         "use --name <serie> (--season <num>) (--episode <num>)\
  (--summary) to filter episodes you want to search")
@@ -374,13 +456,13 @@ to filter episodes you want to search")
 (optional)")
     parser.add_option_group(group4)
 
-
     group5 = OptionGroup(parser, "*** Subtitles",
                         "use --sub <serie> --lang <lang> --sub_sv <num>\
  --sub_ev <num> to find subtitles you want to search")
 
     group5.add_option("--sub", dest="sub", action="store",
-                     help="give the name of the serie you want to see subtitle")
+                     help="give the name of the serie \
+                     you want to see subtitle")
 
     group5.add_option("--sub_lang", dest="sub_lang", action="store",
                      help="display the sub for the given language: vo or vf")
@@ -395,23 +477,48 @@ to filter episodes you want to search")
 
     group6 = OptionGroup(parser, "*** Last Subtitles",
                         "use --last_sub --last_lang <lang> --last_nb <num>\
-                        to search subtitle you want to search")
+ to search subtitle you want to search")
 
     group6.add_option("--last_sub", dest="last_sub", action="store_true",
                      help="boolean set to true by default")
 
     group6.add_option("--last_sub_lang", dest="last_sub_lang", action="store",
-                     help="display the last sub for a given language: vo or vf")
+                     help="display the last sub \
+for a given language: vo or vf")
 
     group6.add_option("--last_sub_nb", dest="last_sub_nb", action="store",
                      help="display the 'n' last subtitles")
 
     parser.add_option_group(group6)
 
-    group7 = OptionGroup(parser, "*** Planning Member")
-    group7.add_option("--planning_member", action="store_true",
-                      help="display the planning of the member")
+    group7 = OptionGroup(parser, "*** Subtitle by Filename")
+    group7.add_option("--sub_by_file", action="store",
+                      help="display the subtitles from a given filename")
+
+    group7.add_option("--sub_by_file_lang", action="store",
+                     help="filter subtitle for a given language: vo or vf")
+
     parser.add_option_group(group7)
+
+    group8 = OptionGroup(parser, "*** Planning General")
+    group8.add_option("--planning_general", action="store_true",
+                      help="display the general planning")
+    parser.add_option_group(group8)
+
+    group9 = OptionGroup(parser, "*** Planning Member")
+    group9.add_option("--planning_member", action="store_true",
+                      help="display the planning of the member")
+    parser.add_option_group(group9)
+
+    group10 = OptionGroup(parser, "*** Member : is he active ?")
+    group10.add_option("--is_active", action="store_true",
+                      help="check if the member is active")
+    parser.add_option_group(group10)
+
+    group11 = OptionGroup(parser, "*** Member : infos ?")
+    group11.add_option("--member_infos", action="store",
+                      help="check if the infos of a member")
+    parser.add_option_group(group11)
 
     (options, args) = parser.parse_args()
     if options.title\
@@ -421,8 +528,12 @@ to filter episodes you want to search")
             and options.videos\
             and options.sub\
             and options.last_sub\
-            and options.planning_member:
-        parser.error("only one option available at a time")
+            and options.planning_member\
+            and options.planning_general\
+            and options.sub_by_file\
+            and options.is_active\
+            and options.member_infos:
+        parser.error("use only one option available at a time")
     else:
         do_action(options)
 
