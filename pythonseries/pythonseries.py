@@ -64,13 +64,15 @@ class Client(object):
                               json_data['root']['errors'][error]['content'])
         return json_data['root']
 
-
     def get_api_status(self):
+        """
+            To know the last modifications and global status of BetaSeries
+        """
         return self.query('status.json')
 
     def shows_search(self, title):
         """
-            look for a title
+            look for a serie from the (piece of) title
         """
         return self.query('shows/search.json', {'title': title})
 
@@ -84,7 +86,6 @@ class Client(object):
                        hide_notes=False, token=None):
         """
             Return all the details of the Episode for a given Season
-            and episode 
         """
         params = {'summary': summary, 'hide_notes': hide_notes}
 
@@ -109,24 +110,43 @@ class Client(object):
         return self.query('shows/episodes/' + url + '.json', params)
 
     def shows_add(self, url, token):
+        """ 
+            Add the serie to the authenticated member
+        """
         return self.query('shows/add/' + url + '.json', {'token': token})
 
     def shows_remove(self, url, token):
+        """ 
+            Remove the serie to the authenticated member
+        """
         return self.query('shows/remove/' + url + '.json', {'token': token})
 
     def shows_recommend(self, url, token, friend):
+        """ 
+            Recommend the serie to the authenticated member's friend
+        """
+        
         return self.query(
             'shows/recommend/' + url + '.json',
             {'token': token, 'friend': friend}
         )
 
     def shows_archive(self, url, token):
+        """
+            Archive a serie for a given authenticated member
+        """
         return self.query('shows/archive/' + url + '.json', {'token': token})
 
     def shows_scrapper(self, my_file):
+        """
+            Send the scrapper to find the serie, ID, number of episode
+        """
         return self.query('shows/scraper.json', {'file': my_file})
 
     def shows_unarchive(self, url, token):
+        """
+            Get the serie out of the archive for a given authenticated member
+        """
         return self.query('shows/unarchive/' + url + '.json', {'token': token})
 
     def shows_characters(self, url, summary=False, id=None):
@@ -142,6 +162,9 @@ class Client(object):
         return self.query('shows/characters/' + url + '.json', params)
 
     def shows_similar(self, url):
+        """
+            Get the similar series to the submitted serie
+        """
         return self.query('shows/similar/' + url + '.json')
 
     def shows_videos(self, url, season=None, episode=None):
@@ -199,6 +222,9 @@ class Client(object):
         return self.query('subtitles/show/' + url + '.json', params)
 
     def subtitles_show_by_file(self, my_file, language=None):
+        """
+            New : you can now get the subtitle directly from the video filename 
+        """
         params = {'file': my_file}
         language_list = ('vo', 'vf')
         if language is not None:
@@ -208,9 +234,16 @@ class Client(object):
 
         return self.query('subtitles/show.json', params)
 
+    def planning_general(self):
+        pass
+    
+    def planning_member(self):
+        pass
+
     def members_auth(self, login, password):
-        """Retourne le token à utiliser pour les requêtes futures.
-        Identifie le membre avec son login et mot de pass sur Beteseries.
+        """
+            get the token to use for future requests
+            identify the member with his login/pass on Betaserie
         """
         params = {'login': login, 'password': password}
         r = requests.get(self.get_host() + "members/auth.json", params=params)
@@ -222,3 +255,153 @@ class Client(object):
             for error in re['root']['errors']:
                 logging.error("Betaseries: %s" %
                               re['root']['errors'][error]['content'])
+    
+    def member_oauth(self, token):
+        """
+            Get the key to user in parameter of 
+            https://www.betaseries.com/oauth?key=<key> 
+            to identify the user without to send a password  
+            The user is redirected on the callback URL you've specified 
+        """
+        return self.query('members/oauth.json', {'token': token})
+
+    def member_is_active(self, token):
+        """
+            Check if the user is activated
+        """
+        return self.query('members/is_active.json', {'token': token})
+
+    def member_destroy(self, token):
+        """
+            destroy immediatly the given token
+        """
+        return self.query('members/destroy.json', {'token': token})
+    
+    def member_infos(self,token=None, login=None, nodata=False, since=None):
+        """
+            Return the main info of the authenticated member
+            or from another member (acces vary from the options of the 
+            private life of the member)
+        """
+        url    = 'members/infos.json'
+        params = {}
+
+        # Check params
+        if token is None and login is None:
+            raise Exception("You must specify token or login")
+
+        #handle login parameter
+        if login is not None:
+            url = 'members/infos/' + login + '.json'
+
+        #handle token parameter
+        if token is not None:
+            params['token'] = token
+
+        #handle nodata parameter
+        if nodata == True:
+            params['nodata'] = 1
+
+        #handle since parameter
+        if since is not None:
+            if not since.isdigit():
+                raise Exception("Invalid since parameter")
+            params['since'] = since
+
+        return self.query(url, params)
+
+    def members_episodes(self):
+        pass
+
+    def members_watched(self):
+        pass
+
+    def members_note(self):
+        pass
+
+    def members_downloaded(self):
+        pass
+
+    def members_notifications(self):
+        pass
+
+    def members_option(self):
+        pass
+
+    def members_signup(self):
+        pass
+
+    def members_friends(self):
+        pass
+
+    def members_badges(self):
+        pass
+
+    def members_add(self):
+        pass
+
+    def members_delete(self):
+        pass
+
+    def members_search(self):
+        pass
+
+    def members_block(self):
+        pass
+
+    def members_unblock(self):
+        pass
+
+    def members_options(self):
+        pass
+
+    def members_sync(self):
+        pass
+
+    def comments_show(self):
+        pass
+
+    def comments_episode(self):
+        pass
+
+    def comments_member(self):
+        pass
+
+    def comment_post_show(self):
+        pass
+
+    def comment_post_episode(self):
+        pass
+
+    def comment_post_member(self):
+        pass
+
+    def comment_subscribe(self):
+        pass
+
+    def comment_unsubscribe(self):
+        pass
+
+    def timeline_home(self):
+        pass
+
+    def timeline_friends(self):
+        pass
+
+    def timeline_member(self):
+        pass
+
+    def message_inbox(self):
+        pass
+
+    def message_discussion(self):
+        pass
+
+    def message_send_new(self):
+        pass
+
+    def message_send_response(self):
+        pass
+
+    def message_delete(self):
+        pass
