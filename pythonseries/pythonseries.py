@@ -6,6 +6,9 @@ logging.basicConfig(format='%(message)s', level=logging.INFO)
 
 
 class Client(object):
+    """
+        Python Class 'Client' to deal with BetaSeries API
+    """
 
     host = "http://api.betaseries.com/"
     api_key = ''
@@ -15,15 +18,24 @@ class Client(object):
     def __init__(self, api_key, user_agent="BetaSeriesPythonClient"):
         """
             init variable
+            :param api_key: string of the key provided by BetaSeries
+            :param user_agent
         """
         self.api_key = api_key
         self.user_agent = user_agent
 
     def set_host(self, host):
+        """
+            set the host from where the API is avaible
+        """
         self.host = host
         return self
 
     def set_user_agent(self, user_agent):
+        """
+            define the user_agent
+            :param user_agent
+        """
         self.user_agent = user_agent
         return self
 
@@ -34,18 +46,23 @@ class Client(object):
     def get_host(self):
         """
             get the host from which to get series
+            :return host
         """
         return self.host
 
     def get_user_agent(self):
         """
             get the user agant we set
+            :return user_agent
         """
         return self.user_agent
 
     def query(self, url, params={}):
         """
-            Do a query to the System
+            Do a query to the System API
+            :param url: mainly the name of the serie
+            :param params: a dict with all the necessary thins to query the API
+            :return json data
         """
         params = params
         params['key'] = self.api_key
@@ -53,6 +70,11 @@ class Client(object):
         return self.handle_json_response(r)
 
     def handle_json_response(self, responses):
+        """
+            get the json data reponse
+            :param responses: the json reponse
+            :return the json data without 'root' node
+        """
         if responses.status_code != 200:
             raise Exception("Wrong status code", responses.status_code)
         json_data = {'root': ''}
@@ -73,12 +95,16 @@ class Client(object):
     def shows_search(self, title):
         """
             look for a serie from the (piece of) title
+            :param title: the title to search
+            :return json data
         """
         return self.query('shows/search.json', {'title': title})
 
     def shows_display(self, url):
         """
             display the details of a given serie
+            :param url: the url of the serie to display
+            :return json data
         """
         return self.query('shows/display/' + url + '.json')
 
@@ -86,6 +112,17 @@ class Client(object):
                        hide_notes=False, token=None):
         """
             Return all the details of the Episode for a given Season
+            :param url: the url of the serie to show
+            :param season: the season to filter (optional)
+            :type season: int
+            :param episode: the episode to filter (optional)
+            :type episode: int
+            :param summary: to summarize the display of the episode (optional)
+            :type summary: boolean
+            :param hide_note (optional)
+            :type hide_note: boolean
+            :param token: token of the user (optional)
+            :return json data
         """
         params = {'summary': summary, 'hide_notes': hide_notes}
 
@@ -112,20 +149,29 @@ class Client(object):
     def shows_add(self, url, token):
         """
             Add the serie to the authenticated member
+            :param url: url to add a serie
+            :param token: the token that identifed the user to access the API
+            :return json data
         """
         return self.query('shows/add/' + url + '.json', {'token': token})
 
     def shows_remove(self, url, token):
         """
             Remove the serie to the authenticated member
+            :param url: url to remove a serie
+            :param token: the token that identifed the user to access the API
+            :return json data
         """
         return self.query('shows/remove/' + url + '.json', {'token': token})
 
     def shows_recommend(self, url, token, friend):
         """
             Recommend the serie to the authenticated member's friend
+            :param url: url to remove a serie
+            :param token: the token that identifed the user to access the API
+            :param friend: the name of a friend
+            :return json data
         """
-
         return self.query(
             'shows/recommend/' + url + '.json',
             {'token': token, 'friend': friend}
@@ -134,40 +180,65 @@ class Client(object):
     def shows_archive(self, url, token):
         """
             Archive a serie for a given authenticated member
+            :param url: url to show the series we archive
+            :param token: the token that identifed the user to access the API
+            :return json data
         """
         return self.query('shows/archive/' + url + '.json', {'token': token})
 
     def shows_scrapper(self, my_file):
         """
             Send the scrapper to find the serie, ID, number of episode
+            :param my_file: try to find a serie from the given file
+            :return json data
         """
         return self.query('shows/scraper.json', {'file': my_file})
 
     def shows_unarchive(self, url, token):
         """
             Get the serie out of the archive for a given authenticated member
+            :param url: url to show the series we 'unarchive'
+            :param token: the token that identifed the user to access the API
+            :return json data
         """
         return self.query('shows/unarchive/' + url + '.json', {'token': token})
 
-    def shows_characters(self, url, summary=False, id=None):
+    def shows_characters(self, url, summary=False, the_id=None):
         """
             list the characters of the series
+            :param url: name of the serie from which we want to display chars
+            :param summary: when set to true will display id and chars name
+            :type summary: boolean
+            :param the_id: display only one character details
+            :type the_id: int
+            :return json data
         """
         params = {'summary': summary}
         '''
             to get only One character
         '''
-        if id is not None:
-            params['id'] = id
+        if the_id is not None:
+            params['id'] = the_id
         return self.query('shows/characters/' + url + '.json', params)
 
     def shows_similar(self, url):
         """
             Get the similar series to the submitted serie
+            :param url: name of the serie (mandatory)
+            :return json data
         """
         return self.query('shows/similar/' + url + '.json')
 
     def shows_videos(self, url, season=None, episode=None):
+        """
+            Show the videos of the given series
+            :param url: the given serie - mandatory
+            :param season: the season to show (optional)
+            :type season: int
+            :param episode: the episode to show (optional)
+            :type episode: int
+            :return: json data
+        """
         params = {}
 
         if season is not None:
@@ -185,6 +256,13 @@ class Client(object):
         return self.query('shows/videos/' + url + '.json', params)
 
     def subtitles_last(self, language=None, number=None):
+        """
+            show the last subtitles
+            :param language: can be vo or vf (optional)
+            :param number: the number of subtitle to show max : 100 (optional)
+            :type number: int
+            :return: json data
+        """
         params = {}
         language_list = ('vo', 'vf')
         if language is not None:
@@ -200,6 +278,16 @@ class Client(object):
         return self.query('subtitles/last.json', params)
 
     def subtitles_show(self, url, language=None, season=None, episode=None):
+        """
+            show the subtitle of a given serie
+            :param url: the given serie (mandatory)
+            :param language: can be vo or vf (optional)
+            :param season: the season to show (optional)
+            :type season: int
+            :param episode: the episode to show (optional)
+            :type episode: int
+            :return: json data
+        """
         params = {}
         language_list = ('vo', 'vf')
         if language is not None:
@@ -224,6 +312,9 @@ class Client(object):
     def subtitles_show_by_file(self, my_file, language=None):
         """
             New : you can now get the subtitle directly from the video filename
+            :param my_file: the file to search
+            :param language: vo or vf (optional)
+            :return: json data
         """
         if not my_file:
             raise Exception("You have to set a filename to search")
@@ -239,9 +330,23 @@ class Client(object):
         return self.query('subtitles/show.json', params)
 
     def planning_general(self):
+        """
+            show the general planning
+            :return: json data
+        """
         return self.query('planning/general.json')
 
-    def planning_member(self, token=None, login=None, unseenOnly=False):
+    def planning_member(self, token=None, login=None, unseen_only=False):
+        """
+            show the member's planning
+            :param token: the string to identify the member (optional)
+            :type token: string
+            :param login: the connection id (optional)
+            :type login: string
+            :param unseen_only: display just the unseen planning (optional)
+            :type unseen: boolean
+            :return: json data
+        """
         url = 'planning/member.json'
         params = {}
 
@@ -258,7 +363,7 @@ class Client(object):
             params['token'] = token
 
         # handle view parameter
-        if unseenOnly == True:
+        if unseen_only == True:
             params['view'] = 'unseen'
 
         return self.query(url, params)
@@ -267,6 +372,11 @@ class Client(object):
         """
             get the token to use for future requests
             identify the member with his login/pass on Betaserie
+            :param login: the string to identify the member (mandatory)
+            :type login: string
+            :param password: the pass in md5
+            :type password: string
+            :return: json data (in fact : the precious token ! )
         """
         params = {'login': login, 'password': password, 'key': self.api_key}
         url = "members/auth.json"
@@ -286,18 +396,27 @@ class Client(object):
             https://www.betaseries.com/oauth?key=<key>
             to identify the user without to send a password
             The user is redirected on the callback URL you've specified
+            :param token: the string to identify the member (mandatory)
+            :type token: string
+            :return: json data
         """
         return self.query('members/oauth.json', {'token': token})
 
     def member_is_active(self, token):
         """
             Check if the user is activated
+            :param token: the string to identify the member (mandatory)
+            :type token: string
+            :return: json data
         """
         return self.query('members/is_active.json', {'token': token})
 
     def member_destroy(self, token):
         """
             destroy immediatly the given token
+            :param token: the string to identify the member (mandatory)
+            :type token: string
+            :return: json data
         """
         return self.query('members/destroy.json', {'token': token})
 
@@ -306,10 +425,18 @@ class Client(object):
             Return the main info of the authenticated member
             or from another member (acces vary from the options of the
             private life of the member)
+            :param token: the string to identify the member (optional)
+            :type token: string
+            :param login: the string to identify the member (optional)
+            :type login: string
+            :param nodata: is True only login and date are returned
+            :type nodata: boolean
+            :param since: filter the infos from this date
+            :type since: int  (timestamp)
+            :return: json data
         """
         url = 'members/infos.json'
         params = {}
-
         # Check params
         if token is None and login is None:
             raise Exception("You must specify token or login")
@@ -334,8 +461,25 @@ class Client(object):
 
         return self.query(url, params)
 
-    def members_episodes(self):
-        pass
+    def members_episodes(self, token, subtitles='all',
+                         show=None, view=None):
+        # handle sousTitres params
+        if subtitles not in ('all', 'vovf', 'vf'):
+            raise Exception("Invalid subtitles parameter")
+
+        url = 'members/episodes/' + subtitles + '.json'
+
+        params = {'token': token}
+
+        # handle show parameter
+        if show is not None:
+            params['show'] = show
+
+        if view is not None:
+            if 'next' != view or not view.isdigit():
+                params['view'] = view
+
+        return self.query(url, params)
 
     def members_watched(self):
         pass

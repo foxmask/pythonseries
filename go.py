@@ -51,40 +51,20 @@ def do_action(options):
         shows_episodes wrapper
         """
         print "you want to search serie %s " % options.name
-        if options.episode and options.season and options.summary:
-            data = c.shows_episodes(options.name,
-                                    options.episode,
-                                    options.season,
-                                    options.summary)
-        elif options.episode and options.season:
-            data = c.shows_episodes(options.name,
-                                    options.season,
-                                    options.episode)
-        elif options.episode and options.summary:
-            data = c.shows_episodes(options.name,
-                                    None,
-                                    options.episode,
-                                    options.summary)
-        elif options.season and options.summary:
-            data = c.shows_episodes(options.name,
-                                    options.season,
-                                    None,
-                                    options.summary)
-        elif options.season:
-            data = c.shows_episodes(options.name,
-                                    options.season)
-        elif options.episode:
-            data = c.shows_episodes(options.name,
-                                    None,
-                                    options.episode)
-        elif options.summary:
-            data = c.shows_episodes(options.name,
-                                    None,
-                                    None,
-                                    options.summary)
-        else:
-            data = c.shows_episodes(options.name, options.episode,
-                                    options.season)
+        params = {}
+        if options.name:
+            params['url'] = options.name
+
+        if options.episode:
+            params['episode'] = options.episode
+
+        if options.season:
+            params['season'] = options.season
+
+        if options.summary:
+            params['summary'] = options.summary
+
+        data = c.shows_episodes(**params)
         # oops we try to find a serie that does not exist
         if 'seasons' not in data.keys() > 0:
             for error in data['errors']:
@@ -144,19 +124,18 @@ def do_action(options):
         shows_characters wrapper
         """
         print "you want to search characters of the serie {characters}"\
-                .format(characters=options.characters)
-        if options.char_summary and options.char_id:
-            data = c.shows_characters(options.characters,
-                                      options.char_summary,
-                                      options.char_id)
-        elif options.char_summary:
-            data = c.shows_characters(options.characters, options.char_summary)
-        elif options.char_id:
-            data = c.shows_characters(options.characters,
-                                      False,
-                                      options.char_id)
-        else:
-            data = c.shows_characters(options.characters)
+                .format(characters=options.chars)
+        params = {}
+        params['url'] = options.chars
+
+        if options.char_summary:
+            params['summary'] = options.char_summary
+
+        if options.char_id:
+            params['the_id'] = options.char_id
+
+        data = c.shows_characters(**params)
+
         # oops we try to find a serie that does not exist
         if 'characters' not in data.keys() > 0:
             for error in data['errors']:
@@ -164,21 +143,25 @@ def do_action(options):
                 print data['errors'][error]['content']
         else:
             for character in data['characters']:
-                print data['characters'][character]['name']
+                name = data['characters'][character]['name']
+                the_id = data['characters'][character]['id']
+                print "%8s %s " % (the_id, name)
 #    elif options.similar:
 #        print "you want to find similar serie to " + options.similar
 #        data = c.shows_similar(options.similar)
 #        print data
     elif options.videos:
         print "you want to search videos of serie " + options.videos
-        if options.sv and options.ev:
-            data = c.shows_videos(options.videos, options.sv, options.ev)
-        elif options.sv:
-            data = c.shows_videos(options.videos, options.sv)
-        elif options.ev:
-            data = c.shows_videos(options.videos, None, options.ev)
-        else:
-            data = c.shows_videos(options.videos)
+        params = {}
+        params['url'] = options.videos
+
+        if options.sv:
+            params['season'] = options.sv
+
+        if options.ev:
+            params['episode'] = options.ev
+
+        data = c.shows_videos(**params)
 
         # oops we try to find a serie that does not exist
         if 'videos' not in data.keys() > 0:
@@ -199,16 +182,15 @@ def do_action(options):
         subtitles_last wrapper
         """
         print "you want to see the last subtitles"
-        if options.last_sub_lang and options.last_sub_nb:
-            data = c.subtitles_last(options.last_sub_lang,
-                                  options.last_sub_nb)
-        elif options.last_sub_lang:
-            data = c.subtitles_last(options.last_sub_lang)
-        elif options.last_sub_nb:
-            data = c.subtitles_last(None,
-                                  options.last_sub_nb)
-        else:
-            data = c.subtitles_last(None, None)
+        params = {}
+
+        if options.last_sub_lang:
+            params['language'] = options.last_sub_lang
+
+        if options.last_sub_nb:
+            params['number'] = options.last_sub_nb
+
+        data = c.subtitles_last(**params)
 
         # oops we try to find a serie that does not exist
         if 'subtitles' not in data.keys() > 0:
@@ -241,36 +223,17 @@ def do_action(options):
         subtitles_show wrapper
         """
         print "you want to search subtitles of serie " + options.sub
-        if options.sub_lang and options.sub_sv and options.sub_ev:
-            data = c.subtitles_show(options.sub,
-                                  options.sub_lang,
-                                  options.sub_sv,
-                                  options.sub_ev)
-        elif options.sub_lang and options.sub_sv:
-            data = c.subtitles_show(options.sub,
-                                  options.sub_lang,
-                                  options.sub_sv)
-        elif options.sub_lang and options.sub_ev:
-            data = c.subtitles_show(options.sub,
-                                  options.sub_lang,
-                                  None,
-                                  options.sub_ev)
-        elif options.sub_sv and options.sub_ev:
-            data = c.subtitles_show(options.sub,
-                                  None,
-                                  options.sub_sv,
-                                  options.sub_ev)
-        elif options.sub_sv:
-            data = c.subtitles_show(options.sub,
-                                  None,
-                                  options.sub_sv)
-        elif options.sub_ev:
-            data = c.subtitles_show(options.sub,
-                                  None,
-                                  None,
-                                  options.sub_ev)
-        else:
-            data = c.subtitles_show(options.sub)
+        params = {}
+        params['url'] = options.sub
+
+        if options.sub_lang:
+            params['language'] = options.sub_lang
+        if options.sub_sv:
+            params['season'] = options.sub_sv
+        if options.sub_ev:
+            params['episode'] = options.sub_ev
+
+        data = c.subtitles_show(**params)
 
         # oops we try to find a serie that does not exist
         if 'subtitles' not in data.keys() > 0:
@@ -361,8 +324,17 @@ def do_action(options):
         member_infos wrapper
         """
         print "you want to display the info of " + options.member_infos
-        # todo : manage token + nodata + since
-        data = c.member_infos(login=options.member_infos)
+        params = {}
+        if options.member_infos:
+            params['login'] = options.member_infos
+        if options.member_token:
+            params['token'] = options.member_token
+        if options.member_nodata:
+            params['nodata'] = options.member_token
+        if options.member_since:
+            params['since'] = options.member_since
+        data = c.member_infos(**params)
+
         if 'member' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
@@ -381,11 +353,24 @@ def do_action(options):
                 print "Episodes: %i" % stats['episodes']
                 print "Progress:" + stats['progress']
                 print "ToWatch: %i" % stats['episodes_to_watch']
-                print "TimeOnTV: %i" % stats['time_on_tv']
-                print "TimeToSpend: %i" % stats['time_to_spend']
+                print "TimeOnTV: " + stats['time_on_tv']
+                print "TimeToSpend: " + stats['time_to_spend']
                 for show in data['member']['shows']:
                     print "url " + data['member']['shows'][show]['url'], \
                           "title " + data['member']['shows'][show]['title']
+    elif options.member_ep:
+        print "you want to display the 'next' Episodes"
+        params = {}
+        params['token'] = get_token()
+        if options.member_ep_sub:
+            params['subtitles'] = options.member_ep_sub
+        if options.member_ep_show:
+            params['show'] = options.member_ep_show
+        if options.member_ep_view:
+            params['view'] = options.member_ep_view
+
+        data = c.members_episodes(**params)
+        print data
 
 
 def main():
@@ -517,8 +502,35 @@ for a given language: vo or vf")
 
     group11 = OptionGroup(parser, "*** Member : infos ?")
     group11.add_option("--member_infos", action="store",
-                      help="check if the infos of a member")
+                      help="get info from the login of the member")
+
+    group11.add_option("--member_token", action="store",
+                      help="member token to get his/our info")
+
+    group11.add_option("--member_nodata", action="store_true",
+                      help="will ONLY display login and date")
+
+    group11.add_option("--member_since", action="store",
+                      help="give a timestamp date to get info from it")
+
     parser.add_option_group(group11)
+
+    group12 = OptionGroup(parser, "*** Member : Episodes ?")
+    group12.add_option("--member_ep", action="store_true",
+                      help="get info from the login of the member")
+
+    group12.add_option("--member_ep_sub", action="store",
+                      help="filter serie with subtitles : all / vovf / vf")
+
+    group12.add_option("--member_ep_show", action="store",
+                      help="give the name of the serie to ONLY get its \
+                      episodes")
+
+    group12.add_option("--member_ep_view", action="store",
+                      help="set a number of next episode to view or just \
+'next' to get the next one")
+
+    parser.add_option_group(group12)
 
     (options, args) = parser.parse_args()
     if options.title\
@@ -532,7 +544,8 @@ for a given language: vo or vf")
             and options.planning_general\
             and options.sub_by_file\
             and options.is_active\
-            and options.member_infos:
+            and options.member_infos\
+            and options.member_ep:
         parser.error("use only one option available at a time")
     else:
         do_action(options)
