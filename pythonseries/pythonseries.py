@@ -492,8 +492,42 @@ to return
     def members_watched(self):
         pass
 
-    def members_note(self):
-        pass
+    def members_note(self, token, url, season, episode, note):
+        """
+            Give a note to an episode for the given season of the serie
+            to give a note to the complet serie put season=0 and episode=0
+            :param token: the string to identify the member (optional)
+            :type token: string
+            :param url: the name of the serie to note
+            :type url: string
+            :param season
+            :type season: int
+            :param episode
+            :type episode: int
+            :param note: from 1 to 5
+            :type note: int
+            :return: json data
+        """
+        # handle season parameter
+        if not season.isdigit():
+            raise Exception("Invalid season parameter")
+
+        # Handle episode parameter
+        if not episode.isdigit():
+            raise Exception("Invalid episode parameter")
+
+        # handle note parameter
+        if note not in range(1, 6):
+            raise Exception("Invalid note parameter")
+
+        params = {
+            'token': token,
+            'season': season,
+            'episode': episode,
+            'note': note
+        }
+
+        return self.query('members/note/' + url + '.json', params)
 
     def members_downloaded(self):
         pass

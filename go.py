@@ -388,6 +388,30 @@ def do_action(options):
                 print "%s %s %s %s %50s %40s %20s %10s" % \
                 (season, episode, show, lang, my_file, url, source, qty)
 
+    elif options.note_serie:
+        if options.note and options.note_episode and options.note_season:
+            print "You want to give a note %s to \
+the episode %s (season %s) of the serie %s" % (options.note,
+                                               options.note_episode,
+                                               options.note_season,
+                                               options.note_serie)
+            params = {
+                  'token': get_token(),
+                  'url': options.note_serie,
+                  'episode': options.note_episode,
+                  'season': options.note_season,
+                  'note': options.note
+                  }
+            data = c.members_note(**params)
+            if len(data['errors']) > 0:
+                for error in data['errors']:
+                    print "Error:"
+                    print data['errors'][error]['content']
+            else:
+                print "note submitted"
+        else:
+            print "All parameters are mandatory"
+
 
 def main():
     # meme message d'aide en plus concis
@@ -556,6 +580,25 @@ for a given language: vo or vf")
 
     parser.add_option_group(group12)
 
+    group14 = OptionGroup(parser, "*** Member : Note ",
+"use --note <note> --note_serie <url> --note_episode <num>\
+ --note_episode <num>.\
+To give a note to the complet serie put --note_season 0 and --note_episode 0")
+
+    group14.add_option("--note", action="store",
+                      help="give a note between 1 and 5", type="int")
+
+    group14.add_option("--note_serie", action="store",
+                      help="url of the serie to evluate. eg breakingbad not\
+                      'Breaking Bad'")
+
+    group14.add_option("--note_episode", action="store",
+                      help="number of the episode of the serie to evluate")
+
+    group14.add_option("--note_season", action="store",
+                      help="number of the season of the serie to evluate")
+    parser.add_option_group(group14)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -570,7 +613,8 @@ for a given language: vo or vf")
             and options.sub_by_file\
             and options.is_active\
             and options.member_infos\
-            and options.member_ep:
+            and options.member_ep\
+            and options.note:
         parser.error("use only one option available at a time")
     else:
         do_action(options)
