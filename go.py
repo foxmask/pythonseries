@@ -146,10 +146,14 @@ def do_action(options):
                 name = data['characters'][character]['name']
                 the_id = data['characters'][character]['id']
                 print "%8s %s " % (the_id, name)
-#    elif options.similar:
-#        print "you want to find similar serie to " + options.similar
-#        data = c.shows_similar(options.similar)
-#        print data
+    elif options.similar:
+        print "you want to find similar series to " + options.similar
+        data = c.shows_similar(options.similar)
+        print "{title:^40} {url:^20}".format(title='title', url='url')
+        for show in data['shows']:
+            title = data['shows'][show]['title']
+            url = data['shows'][show]['url']
+            print u"{title:<30} {url:<20}".format(title=title, url=url)
     elif options.videos:
         print "you want to search videos of serie " + options.videos
         params = {}
@@ -438,6 +442,14 @@ def main():
 
     parser.add_option_group(group3)
 
+    group13 = OptionGroup(parser, "*** Similar Shows",
+                        "use --similar <serie> to find similar serie")
+
+    group13.add_option("--similar", action="store",
+                     help="give the name of the serie to get similar ones")
+
+    parser.add_option_group(group13)
+
     group4 = OptionGroup(parser, "*** Videos",
                         "use --videos <serie> (--sv <num>) (--ev <num>) \
 to filter episodes you want to search")
@@ -549,6 +561,7 @@ for a given language: vo or vf")
             and options.display\
             and options.name and options.episode and options.season\
             and options.chars\
+            and options.similar\
             and options.videos\
             and options.sub\
             and options.last_sub\
