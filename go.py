@@ -370,7 +370,19 @@ def do_action(options):
             params['view'] = options.member_ep_view
 
         data = c.members_episodes(**params)
-        print data
+
+        for ep in data['episodes']:
+            season = data['episodes'][ep]['season']
+            episode = data['episodes'][ep]['episode']
+            show = data['episodes'][ep]['show']
+            for sub in  data['episodes'][ep]['subs']:
+                lang = data['episodes'][ep]['subs'][sub]['language']
+                my_file = data['episodes'][ep]['subs'][sub]['file']
+                url = data['episodes'][ep]['subs'][sub]['url']
+                source = data['episodes'][ep]['subs'][sub]['source']
+                qty = data['episodes'][ep]['subs'][sub]['quality']
+                print "%s %s %s %s %50s %40s %20s %10s" % \
+                (season, episode, show, lang, my_file, url, source, qty)
 
 
 def main():

@@ -463,6 +463,15 @@ class Client(object):
 
     def members_episodes(self, token, subtitles='all',
                          show=None, view=None):
+        """
+            the remaining episode to be seen by the member
+            :param token: the token of the authenticated user (mandatory)
+            :param subtitles: string : all vf vovf to filter episode (optional)
+            :param show: string : the name of the serie (optional)
+            :param view: mixed: 'next' or nn where nn is the number of episode
+to return
+            :return json data
+        """
         # handle sousTitres params
         if subtitles not in ('all', 'vovf', 'vf'):
             raise Exception("Invalid subtitles parameter")
@@ -476,9 +485,8 @@ class Client(object):
             params['show'] = show
 
         if view is not None:
-            if 'next' != view or not view.isdigit():
+            if 'next' == view or view.isdigit():  # bug ?
                 params['view'] = view
-
         return self.query(url, params)
 
     def members_watched(self):
