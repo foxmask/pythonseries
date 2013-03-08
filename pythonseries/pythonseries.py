@@ -682,26 +682,81 @@ to return
 
         return self.query(url, params)
 
-    def members_add(self):
-        pass
+    def members_add(self, token, login):
+        """
+            add the user as friend
+            :param token
+            :param login
+            :return json data
+        """
+        params = {'token': token}
 
-    def members_delete(self):
-        pass
+        return self.query('members/add/' + login + '.json', params)
 
-    def members_search(self):
-        pass
+    def members_delete(self, token, login):
+        """
+            delete the user as friend
+            :param token
+            :param login
+            :return json data
+        """
+        params = {'token': token}
 
-    def members_block(self):
-        pass
+        return self.query('members/delete/' + login + '.json', params)
 
-    def members_unblock(self):
-        pass
+    def members_search(self, login):
+        """
+            list the 10 user that start by the login
+            :param login
+            :return json data
+        """
+        params = {'login': login}
 
-    def members_options(self):
-        pass
+        return self.query('members/search.json', params)
 
-    def members_sync(self):
-        pass
+    def members_block(self, token, login):
+        """
+            block the user
+            :param token
+            :param login
+            :return json data
+        """
+        params = {'token': token}
+
+        return self.query('members/block/' + login + '.json', params)
+
+    def members_unblock(self, token, login):
+        """
+            unblock the user
+            :param token
+            :param login
+            :return json data
+        """
+        params = {'token': token}
+
+        return self.query('members/unblock/' + login + '.json', params)
+
+    def members_options(self, token):
+        """
+            get the options of the member
+            :param token
+            :return json data
+        """
+        params = {'token': token}
+
+        return self.query('members/options.json', params)
+
+    def members_sync(self, token, mail):
+        """
+            get the friends list that match the email address
+            several email addresses accepted seperated by comma
+            :param token
+            :param mail
+            :return json data
+        """
+        params = {'token': token, 'mail': mail}
+
+        return self.query('members/sync.json', params)
 
     def comments_show(self):
         pass

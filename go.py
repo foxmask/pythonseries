@@ -538,6 +538,32 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     name = data['badges'][badge]['name']
                     description = data['badges'][badge]['description']
                     print "%s -*- %s" % (name, description)
+    elif options.members_add:
+        pass
+    elif options.members_delete:
+        pass
+    elif options.members_search:
+        pass
+    elif options.members_block:
+        pass
+    elif options.members_unblock:
+        pass
+    elif options.members_options:
+        params = {}
+        params['token'] = get_token()
+        data = c.members_options(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            for option in data['options']:
+                for source in data['options'][option]:
+                    enabled = data['options'][option][source]['enabled']
+                    name = data['options'][option][source]['name']
+                    print "%s ? %s" % (name, enabled)
+    elif options.members_sync:
+        pass
 
 
 def main():
@@ -813,6 +839,62 @@ all notifications could not be get")
 
     parser.add_option_group(group20)
 
+    group21 = OptionGroup(parser, "*** Members : Add")
+
+    group21.add_option("--members_add",
+                       help="give the login of the friend to add",
+                       action="store")
+
+    parser.add_option_group(group21)
+
+    group22 = OptionGroup(parser, "*** Members : Delete")
+
+    group22.add_option("--members_delete",
+                       help="give the login of the friend to delete",
+                       action="store")
+
+    parser.add_option_group(group22)
+
+    group23 = OptionGroup(parser, "*** Members : Search")
+
+    group23.add_option("--members_search",
+                       help="get a list of 10 friends starting by this string",
+                       action="store")
+
+    parser.add_option_group(group23)
+
+    group24 = OptionGroup(parser, "*** Members : Block")
+
+    group24.add_option("--members_block",
+                       help="give the login of the member to block",
+                       action="store")
+
+    parser.add_option_group(group24)
+
+    group25 = OptionGroup(parser, "*** Members : Unblock")
+
+    group25.add_option("--members_unblock",
+                       help="give the login of the member to unblock",
+                       action="store")
+
+    parser.add_option_group(group25)
+
+    group26 = OptionGroup(parser, "*** Members : Options")
+
+    group26.add_option("--members_options",
+                       help="will display your options",
+                       action="store_true")
+
+    parser.add_option_group(group26)
+
+    group27 = OptionGroup(parser, "*** Members : Options")
+
+    group27.add_option("--members_sync",
+                       help="will list your friend from his email\
+you can put several emails seperated by a comma", action="store")
+
+    parser.add_option_group(group27)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -832,7 +914,14 @@ all notifications could not be get")
             and options.members_dl_series\
             and options.members_notif\
             and options.members_option\
-            and options.members_signup:
+            and options.members_signup\
+            and options.members_add\
+            and options.members_delete\
+            and options.members_search\
+            and options.members_block\
+            and options.members_unblock\
+            and options.members_options\
+            and options.members_sync:
         parser.error("use only one option available at a time")
     else:
         if len(sys.argv) > 1:
