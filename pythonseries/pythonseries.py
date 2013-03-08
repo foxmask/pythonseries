@@ -582,8 +582,20 @@ to return
         print params
         return self.query('members/notifications.json', params)
 
-    def members_option(self):
-        pass
+    def members_option(self, token, option, value=None):
+        params = {'token': token}
+
+        # handle option parameter
+        if option not in ('downloaded', 'notation', 'decalage'):
+            raise Exception("Invalid option parameter")
+
+        # handle value parameter
+        if value is not None:
+            if value not in (0, 1):
+                raise Exception("Invalid value parameter")
+            params['value'] = value
+
+        return self.query('members/option/' + option + '.json', params)
 
     def members_signup(self):
         pass

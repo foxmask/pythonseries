@@ -463,6 +463,31 @@ the episode %s (season %s) of the serie %s" % (options.note,
 
                     print "{date:<10} {seen:<2} {text:<40}".\
                         format(date=my_date, seen=seen, text=text)
+    elif options.members_option:
+        if options.members_option and options.members_option_value:
+            msg = "You want "
+            if options.members_option_value == 'read':
+                value = 0
+                msg += "to read"
+            else:
+                value = 1
+                msg += "to modify"
+            msg += " option to %s" % options.members_option
+            params = {
+                  'token': get_token(),
+                  'value': value,
+                  'option': options.members_option
+                  }
+            data = c.members_option(**params)
+            if len(data['errors']) > 0:
+                for error in data['errors']:
+                    print "Error:"
+                    print data['errors'][error]['content']
+            else:
+                print "option value %s set to %s" % (data['option']['name'],
+                                                      data['option']['value'])
+        else:
+            print "All parameters are mandatory"
 
 
 def main():
@@ -689,6 +714,19 @@ all notifications could not be get")
 
     parser.add_option_group(group16)
 
+    group17 = OptionGroup(parser, "*** Members : Option ", \
+                          "use --members_option <downloaded|notation|decalage>\
+ --members_option_value <read|edit> (mandatory)")
+
+    group17.add_option("--members_option", action="store",
+                      help="must be one of them downloaded,notation, decalage")
+
+    group17.add_option("--members_option_value", action="store",
+                      help="read : to read options and\
+                      edit to modify the option")
+
+    parser.add_option_group(group17)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -706,7 +744,8 @@ all notifications could not be get")
             and options.member_ep\
             and options.note\
             and options.members_dl_series\
-            and options.members_notif:
+            and options.members_notif\
+            and options.members_option:
         parser.error("use only one option available at a time")
     else:
         if len(sys.argv) > 1:
