@@ -3,6 +3,7 @@ from optparse import OptionParser, OptionGroup
 
 import ConfigParser
 import os
+import sys
 
 from pythonseries.pythonseries import Client
 
@@ -412,11 +413,59 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "All parameters are mandatory"
 
+    elif options.members_dl_serie:
+        if options.members_dl_serie and options.members_dl_ep and\
+        options.members_dl_season:
+            print "You want to set the episode %s (season %s) of the serie\
+ %s as downloaded" % (options.members_dl_ep, options.members_dl_season, \
+                      options.members_dl_serie)
+            params = {
+                  'token': get_token(),
+                  'url': options.members_dl_serie,
+                  'episode': options.members_dl_ep,
+                  'season': options.members_dl_season,
+                  }
+            data = c.members_downloaded(**params)
+            if len(data['errors']) > 0:
+                for error in data['errors']:
+                    print "Error:"
+                    print data['errors'][error]['content']
+            else:
+                print "episode marked as downloaded"
+        else:
+            print "All parameters are mandatory"
+    elif options.members_notif:
+        print "you want to display the notifications "
+        params = {'token': get_token()}
+        if options.members_notif_summary:
+            params['summary'] = options.members_notif_summary
+        if options.members_notif_number:
+            params['number'] = options.members_notif_number
+        if options.members_notif_last_id:
+            params['last_id'] = options.members_notif_last_id
+        if options.members_notif_sort:
+            params['sort'] = options.members_notif_sort
+
+        data = c.members_notifications(**params)
+        if 'text' not in data.keys() > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['notifications']) == 0:
+                print "no notification"
+            else:
+                print "%10s %2s %40s" % ('Date', 'Seen?', 'Text')
+                for notif in data['notifications']:
+                    text = data['notifications'][notif]['text']
+                    my_date = data['notifications'][notif]['timestamp']
+                    seen = data['notifications'][notif]['seen']
+
+                    print "{date:<10} {seen:<2} {text:<40}".\
+                        format(date=my_date, seen=seen, text=text)
+
 
 def main():
-    # meme message d'aide en plus concis
-    # usage = "%prog --title my_title\n\
-    #        --episodes --episode n --season m"
     parser = OptionParser()
 
     group0 = OptionGroup(parser, "*** Search series")
@@ -599,6 +648,47 @@ To give a note to the complet serie put --note_season 0 and --note_episode 0")
                       help="number of the season of the serie to evluate")
     parser.add_option_group(group14)
 
+    group15 = OptionGroup(parser, "*** Member : Downloaded ",
+        "use --members_dl_serie <url> --members_dl_ep <num> \
+ --members_dl_season <num>.")
+
+    group15.add_option("--members_dl_serie", action="store",
+                      help="the url of the serie to mark as downloaded\
+eg breakingbad not 'Breaking Bad'")
+
+    group15.add_option("--members_dl_ep", action="store",
+                      help="the number of the episode to mark as downloaded")
+
+    group15.add_option("--members_dl_season", action="store",
+                      help="the season of the episode to mark as downloaded")
+
+    parser.add_option_group(group15)
+
+    group16 = OptionGroup(parser, "*** Member : Notifications ", \
+                           "use --members_notif \
+--members_notif_summary=True/False (optional: default False)\
+--members_notif_number <num> (optional)\
+--members_notif_last_id <num> (optional)\
+dont mix --members_notif_last_id and --members_notif_sort\
+all notifications could not be get")
+
+    group16.add_option("--members_notif", action="store_true",
+                      help="the see the notifications")
+
+    group16.add_option("--members_notif_summary", action="store_true",
+                      help="to get only the number of unread notification")
+
+    group16.add_option("--members_notif_number", action="store",
+                      help="to get the notification from this number")
+
+    group16.add_option("--members_notif_last_id", action="store",
+                      help="to get the last 'n' notifications")
+
+    group16.add_option("--members_notif_sort", action="store",
+                      help="to sort the display, use asc or desc")
+
+    parser.add_option_group(group16)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -614,10 +704,16 @@ To give a note to the complet serie put --note_season 0 and --note_episode 0")
             and options.is_active\
             and options.member_infos\
             and options.member_ep\
-            and options.note:
+            and options.note\
+            and options.members_dl_series\
+            and options.members_notif:
         parser.error("use only one option available at a time")
     else:
-        do_action(options)
+        if len(sys.argv) > 1:
+            do_action(options)
+        else:
+            parser.error("enter -help to see the options you can use")
+
 
 if __name__ == '__main__':
     main()

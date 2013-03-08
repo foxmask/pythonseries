@@ -529,11 +529,58 @@ to return
 
         return self.query('members/note/' + url + '.json', params)
 
-    def members_downloaded(self):
-        pass
+    def members_downloaded(self, token, url, season, episode):
+        """
+            set the episode of the season from the serie as downloaded
+            :param token: the string to identify the member (optional)
+            :type token: string
+            :param url: the name of the serie to set as downloaded
+            :type url: string
+            :param season
+            :type season: int
+            :param episode
+            :type episode: int
+        """
+        # handle season parameter
+        if not season.isdigit():
+            raise Exception("Invalid season parameter")
 
-    def members_notifications(self):
-        pass
+        # Handle episode parameter
+        if not episode.isdigit():
+            raise Exception("Invalid episode parameter")
+
+        params = {'token': token, 'season': season, 'episode': episode}
+
+        return self.query('members/downloaded/' + url + '.json', params)
+
+    def members_notifications(self, token, summary=False, number=None,
+                              last_id=None, sort=None):
+        params = {'token': token}
+
+        # handle sumary parameter
+        if summary == True:
+            params['summary'] = 'yes'
+
+        # handle number parameter
+        if number is not None:
+            if not number.isdigit():
+                raise Exception("Invalid number parameter")
+            params['number'] = number
+
+        # handle last_id parameter
+        if last_id is not None:
+            if not last_id.isdigit():
+                raise Exception("Invalid last_id parameter")
+            params['last_id'] = last_id
+
+        # handle sort parameter
+        if sort is not None:
+            if sort not in ('asc', 'desc'):
+                raise Exception("Invalid sort parameter")
+            params['sort'] = sort
+
+        print params
+        return self.query('members/notifications.json', params)
 
     def members_option(self):
         pass
