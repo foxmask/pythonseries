@@ -540,6 +540,7 @@ to return
             :type season: int
             :param episode
             :type episode: int
+            :return json data
         """
         # handle season parameter
         if not season.isdigit():
@@ -555,6 +556,21 @@ to return
 
     def members_notifications(self, token, summary=False, number=None,
                               last_id=None, sort=None):
+        """
+            Get the Notification of a member
+            if summary is set, return the number of unread notification
+            :param token: the string to identify the member (optional)
+            :type token: string
+            :param summary
+            :type summary: boolean
+            :param number
+            :type number: int
+            :param last_id
+            :type last_id: int
+            :param sort
+            :type last_id: string
+            :return json data
+        """
         params = {'token': token}
 
         # handle sumary parameter
@@ -583,6 +599,17 @@ to return
         return self.query('members/notifications.json', params)
 
     def members_option(self, token, option, value=None):
+        """
+            Get the Notification of a member
+            if summary is set, return the number of unread notification
+            :param token: the string to identify the member (optional)
+            :type token: string
+            :param option has to be 'downloaded', 'notation', 'decalage'
+            :type option: string
+            :param value has to be 0 (to read) or 1 (to modify)
+            :type value: int
+            :return json data
+        """
         params = {'token': token}
 
         # handle option parameter
@@ -597,14 +624,63 @@ to return
 
         return self.query('members/option/' + option + '.json', params)
 
-    def members_signup(self):
-        pass
+    def members_signup(self, login, password, mail):
+        """
+            create a new account
+            :param login
+            :param password
+            :param email
+            :return json data
+        """
+        # handle login parameter
+        if len(login) > 24:
+            raise Exception("login too long")
 
-    def members_friends(self):
-        pass
+        params = {'login': login, 'password': password, 'mail': mail}
+        print params
+        return self.query('members/signup.json', params)
 
-    def members_badges(self):
-        pass
+    def members_friends(self, token=None, login=None):
+        """
+            get the list of friends of the user identified by is login or token
+            :param token
+            :param login
+            :return json data
+        """
+        params = {}
+
+        # handle token parameter
+        if token is not None:
+            params['token'] = token
+
+        url = 'members/friends.json'
+
+        # handle login parameter
+        if login is not None:
+            url = 'members/friends/' + login + '.json'
+
+        return self.query(url, params)
+
+    def members_badges(self, token=None, login=None):
+        """
+            get the list of badges of the user identified by is login or token
+            :param token
+            :param login
+            :return json data
+        """
+        params = {}
+
+        # handle token parameter
+        if token is not None:
+            params['token'] = token
+
+        url = 'members/badges.json'
+
+        # handle login parameter
+        if login is not None:
+            url = 'members/badges/' + login + '.json'
+
+        return self.query(url, params)
 
     def members_add(self):
         pass

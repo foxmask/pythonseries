@@ -488,6 +488,56 @@ the episode %s (season %s) of the serie %s" % (options.note,
                                                       data['option']['value'])
         else:
             print "All parameters are mandatory"
+    elif options.members_signup:
+        if options.members_signup_pass and options.members_signup_mail:
+            params = {'login': options.members_signup,
+                      'password': options.members_signup_pass,
+                      'mail': options.members_signup_mail}
+            data = c.members_signup(**params)
+            if len(data['errors']) > 0:
+                for error in data['errors']:
+                    print "Error:"
+                    print data['errors'][error]['content']
+            else:
+                print "Account created"
+        else:
+            print "All parameters are mandatory"
+    elif options.members_friends:
+        params = {}
+        if options.members_friends_token:
+            params['token'] = get_token()
+        if options.members_friends_login:
+            params['login'] = options.members_friends_login
+        data = c.members_friends(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['friends']) == 0:
+                print "No friends found"
+            else:
+                for friend in data['friends']:
+                    print data['friends'][friend]['login']
+    elif options.members_badges:
+        params = {}
+        if options.members_badges_token:
+            params['token'] = get_token()
+        if options.members_badges_login:
+            params['login'] = options.members_badges_login
+        data = c.members_badges(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['badges']) == 0:
+                print "No badge found"
+            else:
+                for badge in data['badges']:
+                    name = data['badges'][badge]['name']
+                    description = data['badges'][badge]['description']
+                    print "%s -*- %s" % (name, description)
 
 
 def main():
@@ -526,6 +576,8 @@ def main():
     group3 = OptionGroup(parser, "*** Characters",
                         "use --chars <serie> (--char_summary <num>)\
  (--char_id <num>) to find characters for the series you want to search")
+                # print "option value %s set to %s" % (data['option']['name'],
+                #                                      data['option']['value'])
 
     group3.add_option("--chars", action="store",
                      help="give the name of the serie to get\
@@ -727,6 +779,40 @@ all notifications could not be get")
 
     parser.add_option_group(group17)
 
+    group18 = OptionGroup(parser, "*** Members : Signup ", \
+                          "use --members_signup <login>\
+ --members_signup_pass <password> --members_signup_mail <email>")
+
+    group18.add_option("--members_signup", action="store",
+                      help="the login: max 24 chars")
+
+    group18.add_option("--members_signup_pass", action="store")
+    group18.add_option("--members_signup_mail", action="store")
+
+    parser.add_option_group(group18)
+
+    group19 = OptionGroup(parser, "*** Members : Friends ", \
+                          "use --members_friends\
+ --members_friends_token to get the friends of your account (optional)\
+ --members_friends_login <login> to get the friends of this member (optional)")
+
+    group19.add_option("--members_friends", action="store_true")
+
+    group19.add_option("--members_friends_token", action="store_true")
+    group19.add_option("--members_friends_login", action="store")
+
+    group20 = OptionGroup(parser, "*** Members : Badges", \
+                          "use --members_badges\
+ --members_badges_token to get the friends of your account (optional)\
+ --members_badges_login <login> to get the friends of this member (optional)")
+
+    group20.add_option("--members_badges", action="store_true")
+
+    group20.add_option("--members_badges_token", action="store_true")
+    group20.add_option("--members_badges_login", action="store")
+
+    parser.add_option_group(group20)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -745,7 +831,8 @@ all notifications could not be get")
             and options.note\
             and options.members_dl_series\
             and options.members_notif\
-            and options.members_option:
+            and options.members_option\
+            and options.members_signup:
         parser.error("use only one option available at a time")
     else:
         if len(sys.argv) > 1:
