@@ -147,6 +147,7 @@ def do_action(options):
                 name = data['characters'][character]['name']
                 the_id = data['characters'][character]['id']
                 print "%8s %s " % (the_id, name)
+
     elif options.similar:
         print "you want to find similar series to " + options.similar
         data = c.shows_similar(options.similar)
@@ -155,6 +156,7 @@ def do_action(options):
             title = data['shows'][show]['title']
             url = data['shows'][show]['url']
             print u"{title:<30} {url:<20}".format(title=title, url=url)
+
     elif options.videos:
         print "you want to search videos of serie " + options.videos
         params = {}
@@ -223,6 +225,7 @@ def do_action(options):
                              title=title,
                              lang=lang,
                              file=my_file)
+
     elif options.sub:
         """
         subtitles_show wrapper
@@ -246,16 +249,12 @@ def do_action(options):
                 print "Error:"
                 print data['errors'][error]['content']
         else:
-            # all the data
-            # print data['subtitles']
             print "{season:^10} {ep:^10} {lang:^5} {file:^50} {url:^50}".\
                 format(season='Season',
                        ep='Episode',
                        lang='Lang',
                        file='File',
                        url='URL')
-
-            # print data['subtitles']
 
             for subtitle in data['subtitles']:
                 season = data['subtitles'][subtitle]['season']
@@ -269,6 +268,7 @@ def do_action(options):
                              lang=language,
                              file=my_file,
                              url=url)
+
     elif options.sub_by_file:
         """
         subtitles_show_by_file wrapper
@@ -281,6 +281,7 @@ def do_action(options):
             for error in data['errors']:
                 print "Error:"
                 print data['errors'][error]['content']
+
     elif options.planning_general:
         """
         planning_general wrapper
@@ -296,6 +297,7 @@ def do_action(options):
             title = data['planning'][planning]['title']
             print u"{show:<40} {number:<10} {title:<30}".\
                 format(show=show, number=number, title=title)
+
     elif options.planning_member:
         """
         planning_member wrapper
@@ -311,6 +313,7 @@ def do_action(options):
             title = data['planning'][planning]['title']
             print u"{show:<40} {number:<10} {title:<30}".\
                 format(show=show, number=number, title=title)
+
     elif options.is_active:
         """
         member_is_active wrapper
@@ -324,6 +327,7 @@ def do_action(options):
                 print data['errors'][error]['content']
         else:
             print "Member is active"
+
     elif options.member_infos:
         """
         member_infos wrapper
@@ -363,6 +367,7 @@ def do_action(options):
                 for show in data['member']['shows']:
                     print "url " + data['member']['shows'][show]['url'], \
                           "title " + data['member']['shows'][show]['title']
+
     elif options.member_ep:
         print "you want to display the 'next' Episodes"
         params = {}
@@ -434,6 +439,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 print "episode marked as downloaded"
         else:
             print "All parameters are mandatory"
+
     elif options.members_notif:
         print "you want to display the notifications "
         params = {'token': get_token()}
@@ -463,6 +469,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
 
                     print "{date:<10} {seen:<2} {text:<40}".\
                         format(date=my_date, seen=seen, text=text)
+
     elif options.members_option:
         if options.members_option and options.members_option_value:
             msg = "You want "
@@ -488,6 +495,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                                                       data['option']['value'])
         else:
             print "All parameters are mandatory"
+
     elif options.members_signup:
         if options.members_signup_pass and options.members_signup_mail:
             params = {'login': options.members_signup,
@@ -502,6 +510,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 print "Account created"
         else:
             print "All parameters are mandatory"
+
     elif options.members_friends:
         params = {}
         if options.members_friends_token:
@@ -519,6 +528,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
             else:
                 for friend in data['friends']:
                     print data['friends'][friend]['login']
+
     elif options.members_badges:
         params = {}
         if options.members_badges_token:
@@ -538,16 +548,70 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     name = data['badges'][badge]['name']
                     description = data['badges'][badge]['description']
                     print "%s -*- %s" % (name, description)
+
     elif options.members_add:
-        pass
+        params = {}
+        params['token'] = get_token()
+        params['login'] = options.members_add
+        data = c.members_add(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "member %s added" % options.members_add
+
     elif options.members_delete:
-        pass
+        params = {}
+        params['token'] = get_token()
+        params['login'] = options.members_delete
+        data = c.members_delete(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "member %s deleted" % options.members_delete
+
     elif options.members_search:
-        pass
+        params = {}
+        params['login'] = options.members_search
+        data = c.members_search(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['members']) == 0:
+                print "no member found"
+            else:
+                for member in data['members']:
+                    print data['members'][member]['login']
+
     elif options.members_block:
-        pass
+        params = {}
+        params['token'] = get_token()
+        params['login'] = options.members_block
+        data = c.members_block(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "member %s deleted" % options.members_block
+
     elif options.members_unblock:
-        pass
+        params = {}
+        params['token'] = get_token()
+        params['login'] = options.members_unblock
+        data = c.members_unblock(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "member %s unblocked" % options.members_unblock
+
     elif options.members_options:
         params = {}
         params['token'] = get_token()
@@ -562,8 +626,50 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     enabled = data['options'][option][source]['enabled']
                     name = data['options'][option][source]['name']
                     print "%s ? %s" % (name, enabled)
+
     elif options.members_sync:
         pass
+
+    elif options.comments_show:
+        params = {'url': options.comments_show}
+        data = c.comments_show(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['comments']) == 0:
+                print "no comment"
+            else:
+                print "%20s - %14s - %40s" % ('Login', 'Date', 'Text')
+                for comment in data['comments']:
+                    text = data['comments'][comment]['text']
+                    my_date = data['comments'][comment]['date']
+                    login = data['comments'][comment]['login']
+                    print "%20s - %14s - %40s" % (login, my_date, text)
+
+    elif options.comments_episode:
+        if options.comments_episode_season and options.comments_episode_num:
+            params = {'url': options.comments_episode,
+                      'episode': options.comments_episode_num,
+                      'season': options.comments_episode_season}
+            data = c.comments_episode(**params)
+            if len(data['errors']) > 0:
+                for error in data['errors']:
+                    print "Error:"
+                    print data['errors'][error]['content']
+            else:
+                if len(data['comments']) == 0:
+                    print "no comment"
+                else:
+                    print "%20s - %14s - %40s" % ('Login', 'Date', 'Text')
+                    for comment in data['comments']:
+                        text = data['comments'][comment]['text']
+                        my_date = data['comments'][comment]['date']
+                        login = data['comments'][comment]['login']
+                        print "%20s - %14s - %40s" % (login, my_date, text)
+        else:
+            print "All parameters are mandatory"
 
 
 def main():
@@ -895,6 +1001,32 @@ you can put several emails seperated by a comma", action="store")
 
     parser.add_option_group(group27)
 
+    group28 = OptionGroup(parser, "*** Comments : Show",
+                          "display the list of comments of the serie")
+
+    group28.add_option("--comments_show",
+                       help="give the url of the serie eg breakingbad not\
+                       'Breaking Bad'", action="store")
+
+    parser.add_option_group(group28)
+
+    group29 = OptionGroup(parser, "*** Comments : Show",
+                          "display the list of comments of the serie")
+
+    group29.add_option("--comments_episode",
+                       help="give the url of the serie eg breakingbad not\
+                       'Breaking Bad'", action="store")
+
+    group29.add_option("--comments_episode_num", action="store",
+                     help="give the number of the episode you want to read\
+                     comments")
+
+    group29.add_option("--comments_episode_season", action="store",
+                     help="give the number of the season you want to read\
+                     the comments of the given episode")
+
+    parser.add_option_group(group29)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -921,7 +1053,10 @@ you can put several emails seperated by a comma", action="store")
             and options.members_block\
             and options.members_unblock\
             and options.members_options\
-            and options.members_sync:
+            and options.members_sync\
+            and options.comments_show\
+            and options.comments_episode\
+            and options.comments_member:
         parser.error("use only one option available at a time")
     else:
         if len(sys.argv) > 1:

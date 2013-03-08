@@ -758,14 +758,43 @@ to return
 
         return self.query('members/sync.json', params)
 
-    def comments_show(self):
-        pass
+    def comments_show(self, url):
+        """
+            display the comment of the given serie
+            :param url : url of the serie
+            :type url: string
+            :return json data
+        """
+        return self.query('comments/show/' + url + '.json')
 
-    def comments_episode(self):
-        pass
+    def comments_episode(self, url, season, episode):
+        """
+            display the comment of the given episode
+            :param url: url of the serie
+            :type url: string
+            :param season: number of the season of the episode
+            :type season: int
+            :param episode: number of the episode
+            :type episode: int
+            :return json data
+        """
+        params = {'season': season, 'episode': episode}
+        if not season.isdigit():
+            raise Exception("Invalid season parameter")
 
-    def comments_member(self):
-        pass
+        if not episode.isdigit():
+            raise Exception("Invalid season parameter")
+
+        return self.query('comments/episode/' + url + '.json', params)
+
+    def comments_member(self, login):
+        """
+            display the comment of the given member
+            :param login : login's member
+            :type login: string
+            :return json data
+        """
+        return self.query('comments/member/' + login + '.json')
 
     def comment_post_show(self):
         pass
