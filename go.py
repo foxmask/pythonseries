@@ -670,6 +670,21 @@ the episode %s (season %s) of the serie %s" % (options.note,
                         print "%20s - %14s - %40s" % (login, my_date, text)
         else:
             print "All parameters are mandatory"
+    elif options.comments_member:
+        data = c.comments_member(options.comments_member)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['comments']) == 0:
+                print "no comment"
+            else:
+                print "%14s - %40s" % ('Date', 'Text')
+                for comment in data['comments']:
+                    text = data['comments'][comment]['text']
+                    my_date = data['comments'][comment]['date']
+                    print "%14s - %40s" % (my_date, text)
 
 
 def main():
@@ -771,7 +786,7 @@ to filter episodes you want to search")
  to search subtitle you want to search")
 
     group6.add_option("--last_sub", dest="last_sub", action="store_true",
-                     help="boolean set to true by default")
+                     help="boolean set to true by defauoptionslt")
 
     group6.add_option("--last_sub_lang", dest="last_sub_lang", action="store",
                      help="display the last sub \
@@ -1010,7 +1025,7 @@ you can put several emails seperated by a comma", action="store")
 
     parser.add_option_group(group28)
 
-    group29 = OptionGroup(parser, "*** Comments : Show",
+    group29 = OptionGroup(parser, "*** Comments : Episode",
                           "display the list of comments of the serie")
 
     group29.add_option("--comments_episode",
@@ -1026,6 +1041,14 @@ you can put several emails seperated by a comma", action="store")
                      the comments of the given episode")
 
     parser.add_option_group(group29)
+
+    group30 = OptionGroup(parser, "*** Comments : Member", \
+                          "display the member's comments")
+
+    group30.add_option("--comments_member",
+                       help="give the name of the member", action="store")
+
+    parser.add_option_group(group30)
 
     (options, args) = parser.parse_args()
     if options.title\

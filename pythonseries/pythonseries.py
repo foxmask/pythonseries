@@ -796,17 +796,50 @@ to return
         """
         return self.query('comments/member/' + login + '.json')
 
-    def comment_post_show(self):
-        pass
+    def comment_post_show(self, token, show, text, in_reply_to=None):
+        params = {'token': token, 'show': show, 'text': text}
 
-    def comment_post_episode(self):
-        pass
+        # handle in_reply_to parameter
+        if in_reply_to is not None:
+            if not in_reply_to.isdigit():
+                raise Exception('Invalid in_reply_to parameter')
+            params['in_reply_to'] = in_reply_to
 
-    def comment_post_member(self):
-        pass
+        return self.query('comments/post/show.json', params)
 
-    def comment_subscribe(self):
-        pass
+    def comment_post_episode(self, token, show, season, episode,
+                             text, in_reply_to=None):
+        params = {'token': token,
+                  'show': show,
+                  'season': season,
+                  'episode': episode,
+                  'text': text}
+
+        # handle in_reply_to parameter
+        if in_reply_to is not None:
+            if not in_reply_to.isdigit():
+                raise Exception('Invalid in_reply_to parameter')
+            params['in_reply_to'] = in_reply_to
+
+        return self.query('comments/post/episode.json', params)
+
+    def comment_post_member(self, token, member, text, in_reply_to=None):
+        params = {'token': token,
+                  'member': member,
+                  'text': text}
+
+        # handle in_reply_to parameter
+        if in_reply_to is not None:
+            if not in_reply_to.isdigit():
+                raise Exception('Invalid in_reply_to parameter')
+            params['in_reply_to'] = in_reply_to
+
+        return self.query('comments/post/episode.json', params)
+
+    def comments_subscribe(self, token, ref_id):
+        params = {'token': token, 'ref_id': ref_id}
+
+        return self.query('comments/subscribe.json', params)
 
     def comment_unsubscribe(self):
         pass
