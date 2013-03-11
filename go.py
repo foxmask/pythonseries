@@ -1219,7 +1219,7 @@ to a member")
                           "display the last events of the website")
 
     group36.add_option("--timeline_home",
-                       help="give the number between 1 à 100", action="store")
+                       help="give the number between 1 to 100", action="store")
 
     parser.add_option_group(group36)
 
@@ -1227,14 +1227,14 @@ to a member")
                           "display the last events of your friends")
 
     group37.add_option("--timeline_friends",
-                       help="give the number between 1 à 100", action="store")
+                       help="give the number between 1 to 100", action="store")
 
     parser.add_option_group(group37)
 
     group38 = OptionGroup(parser, "*** Timeline : Member", \
                           "display the last events of a member")
     group38.add_option("--timeline_member",
-                       help="give the number between 1 à 100", action="store")
+                       help="give the number between 1 to 100", action="store")
     group38.add_option("--timeline_member_login",
                        help="give login of your friend (mandatory)",
                        action="store")
@@ -1325,6 +1325,7 @@ to a member")
             and options.comments_unsubscribe\
             and options.timeline_home\
             and options.timeline_friends\
+            and options.timeline_member\
             and options.message_inbox\
             and options.message_discussion\
             and options.message_send_new\
