@@ -685,6 +685,149 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     text = data['comments'][comment]['text']
                     my_date = data['comments'][comment]['date']
                     print "%14s - %40s" % (my_date, text)
+    elif options.comments_post_show:
+        pass
+    elif options.comments_post_episode:
+        pass
+    elif options.comments_post_member:
+        pass
+    elif options.comments_subscribe:
+        pass
+    elif options.comments_unsubscribe:
+        pass
+    elif options.timeline_home:
+        data = c.timeline_home(options.timeline_home)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "%12s - %20s - %5s - %20s - %40s - %40s" % \
+            ('Date', 'Login', 'Types', 'URL', 'Event', 'Title')
+            for timeline in data['timeline']:
+                types = data['timeline'][timeline]['type']
+                if 'data' in data['timeline'][timeline].keys():
+                    url = data['timeline'][timeline]['data']['url']
+                    title = data['timeline'][timeline]['data']['title']
+                else:
+                    url = ""
+                    title = ""
+                my_date = data['timeline'][timeline]['date']
+                login = url = data['timeline'][timeline]['login']
+                html = data['timeline'][timeline]['html']
+                print "%12s - %20s - %5s - %20s - %40s - %40s" % \
+                (my_date, login, types, url, html, title)
+    elif options.timeline_friends:
+        data = c.timeline_friends(get_token(), options.timeline_friends)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "%12s - %20s - %5s - %20s - %40s - %40s" % \
+            ('Date', 'Friends', 'Types', 'URL', 'Event', 'Title')
+            for timeline in data['timeline']:
+                types = data['timeline'][timeline]['type']
+                if 'data' in data['timeline'][timeline].keys():
+                    url = data['timeline'][timeline]['data']['url']
+                else:
+                    url = ""
+                if 'title' in data['timeline'][timeline].keys():
+                    title = data['timeline'][timeline]['data']['title']
+                else:
+                    title = ""
+                my_date = data['timeline'][timeline]['date']
+                login = url = data['timeline'][timeline]['login']
+                html = data['timeline'][timeline]['html']
+                print "%12s - %20s - %5s - %20s - %40s - %40s" % \
+                (my_date, login, types, url, html, title)
+    elif options.timeline_member:
+        params = {'number': options.timeline_member}
+        if options.timeline_member_login:
+            params['member'] = options.timeline_member_login
+        if options.timeline_member_token:
+            params['token'] = get_token()
+        data = c.timeline_member(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "%12s - %20s - %5s - %20s - %40s - %40s" % \
+            ('Date', 'Friends', 'Types', 'URL', 'Event', 'Title')
+            for timeline in data['timeline']:
+                types = data['timeline'][timeline]['type']
+                if 'data' in data['timeline'][timeline].keys():
+                    url = data['timeline'][timeline]['data']['url']
+                else:
+                    url = ""
+                if 'title' in data['timeline'][timeline].keys():
+                    title = data['timeline'][timeline]['data']['title']
+                else:
+                    title = ""
+                my_date = data['timeline'][timeline]['date']
+                login = url = data['timeline'][timeline]['login']
+                html = data['timeline'][timeline]['html']
+                print "%12s - %20s - %5s - %20s - %40s - %40s" % \
+                (my_date, login, types, url, html, title)
+
+    elif options.message_inbox:
+        params = {'token': get_token()}
+        if options.message_inbox_page:
+            params['page'] = options.message_inbox_page
+        data = c.message_inbox(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['discussions']) == 0:
+                print "no message found"
+            else:
+                for msg in data['discussions']:
+                    print data['discussions'][msg]
+
+    elif options.message_discussion:
+        params = {'token': get_token(),
+                  'my_id': options.message_discussion}
+        if options.message_discussion_page:
+            params['page'] = options.message_discussion_page
+        data = c.message_discussion(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            if len(data['discussions']) == 0:
+                print "no message found"
+            else:
+                for msg in data['discussions']:
+                    print data['discussions'][msg]
+
+    elif options.message_send_new:
+        params = {'token': get_token(),
+                  'title': options.message_send_new,
+                  'text': options.message_send_new_text,
+                  'recipient': options.message_send_new_recipient}
+        data = c.message_send_new(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print data
+
+    elif options.message_send_response:
+        params = {'token': get_token(),
+                  'text': options.message_send_response_text,
+                  'discussion_id': options.message_send_response}
+        data = c.message_send_response(**params)
+        print data
+
+    elif options.message_delete:
+        params = {'token': get_token(), 'my_id': options.message_delete}
+        data = c.message_delete(**params)
+        print data
 
 
 def main():
@@ -1050,6 +1193,101 @@ you can put several emails seperated by a comma", action="store")
 
     parser.add_option_group(group30)
 
+    group31 = OptionGroup(parser, "*** Comments : Post a comment to a show")
+    group31.add_option("--comments_post_show", action="store")
+    parser.add_option_group(group31)
+
+    group32 = OptionGroup(parser, "*** Comments : Post a comment\
+to an episode")
+    group32.add_option("--comments_post_episode", action="store")
+    parser.add_option_group(group32)
+
+    group33 = OptionGroup(parser, "*** Comments : Post a comment\
+to a member")
+    group33.add_option("--comments_post_member", action="store")
+    parser.add_option_group(group33)
+
+    group34 = OptionGroup(parser, "*** Comments : Subscribe to a comment")
+    group34.add_option("--comments_subscribe", action="store")
+    parser.add_option_group(group34)
+
+    group35 = OptionGroup(parser, "*** Comments : Unsubscribe to a comment")
+    group35.add_option("--comments_unsubscribe", action="store")
+    parser.add_option_group(group35)
+
+    group36 = OptionGroup(parser, "*** Timeline : Home", \
+                          "display the last events of the website")
+
+    group36.add_option("--timeline_home",
+                       help="give the number between 1 à 100", action="store")
+
+    parser.add_option_group(group36)
+
+    group37 = OptionGroup(parser, "*** Timeline : Friends", \
+                          "display the last events of your friends")
+
+    group37.add_option("--timeline_friends",
+                       help="give the number between 1 à 100", action="store")
+
+    parser.add_option_group(group37)
+
+    group38 = OptionGroup(parser, "*** Timeline : Member", \
+                          "display the last events of a member")
+    group38.add_option("--timeline_member",
+                       help="give the number between 1 à 100", action="store")
+    group38.add_option("--timeline_member_login",
+                       help="give login of your friend (mandatory)",
+                       action="store")
+    group38.add_option("--timeline_member_token",
+                       help="to use your token", action="store_true")
+    parser.add_option_group(group38)
+
+    group39 = OptionGroup(parser, "*** Message : Inbox", "display your inbox")
+    group39.add_option("--message_inbox", action="store_true")
+    group39.add_option("--message_inbox_page",
+                      help="give the number of the page (optional)",
+                      action="store")
+    parser.add_option_group(group39)
+
+    group40 = OptionGroup(parser, "*** Message : Discussion", \
+"display the given discussion")
+    group40.add_option("--message_discussion",
+                       help="give the id of the discussion to display",
+                       action="store")
+    group40.add_option("--message_discussion_page",
+                       help="give the number of the page (optional)",
+                       action="store")
+    parser.add_option_group(group40)
+
+    group41 = OptionGroup(parser, "*** Message : Send a new discussion", \
+"send a new discussion")
+    group41.add_option("--message_send_new",
+                       help="give the title of the discussion",
+                       action="store")
+    group41.add_option("--message_send_new_text",
+                       help="give the text of the discussion",
+                       action="store")
+    group41.add_option("--message_send_new_recipient",
+                       help="give the name of the member who'll received it",
+                       action="store")
+    parser.add_option_group(group41)
+
+    group42 = OptionGroup(parser, "*** Message : Send a response", \
+"send a response")
+    group42.add_option("--message_send_response",
+                       help="give the id of the discusion you're responding",
+                       action="store")
+    group42.add_option("--message_send_response_text",
+                       help="give the text of the response",
+                       action="store")
+    parser.add_option_group(group42)
+
+    group43 = OptionGroup(parser, "*** Message : Delete", "delete a message")
+    group43.add_option("--message_delete",
+                       help="give the id of the discusion to delete",
+                       action="store")
+    parser.add_option_group(group43)
+
     (options, args) = parser.parse_args()
     if options.title\
             and options.display\
@@ -1079,7 +1317,19 @@ you can put several emails seperated by a comma", action="store")
             and options.members_sync\
             and options.comments_show\
             and options.comments_episode\
-            and options.comments_member:
+            and options.comments_member\
+            and options.comments_post_show\
+            and options.comment_post_episode\
+            and options.comment_post_member\
+            and options.comments_subscribe\
+            and options.comments_unsubscribe\
+            and options.timeline_home\
+            and options.timeline_friends\
+            and options.message_inbox\
+            and options.message_discussion\
+            and options.message_send_new\
+            and options.message_send_response\
+            and options.message_delete:
         parser.error("use only one option available at a time")
     else:
         if len(sys.argv) > 1:

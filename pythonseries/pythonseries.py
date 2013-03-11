@@ -57,7 +57,7 @@ class Client(object):
         """
         return self.user_agent
 
-    def query(self, url, params={}):
+    def query(self, url, params={}, method='get'):
         """
             Do a query to the System API
             :param url: mainly the name of the serie
@@ -66,7 +66,10 @@ class Client(object):
         """
         params = params
         params['key'] = self.api_key
-        r = requests.get(self.get_host() + url, params=params)
+        if method == 'get':
+            r = requests.get(self.get_host() + url, params=params)
+        elif method == 'post':
+            r = requests.post(self.get_host() + url, params=params)
         return self.handle_json_response(r)
 
     def handle_json_response(self, responses):
@@ -796,7 +799,18 @@ to return
         """
         return self.query('comments/member/' + login + '.json')
 
-    def comment_post_show(self, token, show, text, in_reply_to=None):
+    def comments_post_show(self, token, show, text, in_reply_to=None):
+        """
+            post a comment on the show
+            :param token : token of the authenticated member
+            :type token: string
+            :param show : the name of the show
+            :type show: string
+            :param in_reply_to : to specify the comment you reply
+            :type in_reply_to: int
+            :return json data
+        """
+
         params = {'token': token, 'show': show, 'text': text}
 
         # handle in_reply_to parameter
@@ -807,8 +821,22 @@ to return
 
         return self.query('comments/post/show.json', params)
 
-    def comment_post_episode(self, token, show, season, episode,
+    def comments_post_episode(self, token, show, season, episode,
                              text, in_reply_to=None):
+        """
+            post a comment on the episode
+            :param token : token of the authenticated member
+            :type token: string
+            :param show : the name of the show
+            :type show: string
+            :param season : the season
+            :type season: int
+            :param episode : the episode
+            :type episode: int
+            :param in_reply_to : to specify the comment you reply
+            :type in_reply_to: int
+            :return json data
+        """
         params = {'token': token,
                   'show': show,
                   'season': season,
@@ -823,7 +851,7 @@ to return
 
         return self.query('comments/post/episode.json', params)
 
-    def comment_post_member(self, token, member, text, in_reply_to=None):
+    def comments_post_member(self, token, member, text, in_reply_to=None):
         params = {'token': token,
                   'member': member,
                   'text': text}
@@ -837,33 +865,181 @@ to return
         return self.query('comments/post/episode.json', params)
 
     def comments_subscribe(self, token, ref_id):
+        """
+            subscribe to the comment of the given ref by mail
+            :param token : token of the authenticated member
+            :type token: string
+            :param ref_id : the ref_id
+            :type ref_id: int
+            :return json data
+        """
+
         params = {'token': token, 'ref_id': ref_id}
 
         return self.query('comments/subscribe.json', params)
 
-    def comment_unsubscribe(self):
-        pass
+    def comments_unsubscribe(self, token, ref_id):
+        """
+            unsubscribe to the comment of the given ref
+            :param token : token of the authenticated member
+            :type token: string
+            :param ref_id : the ref_id
+            :type ref_id: int
+            :return json data
+        """
+        params = {'token': token, 'ref_id': ref_id}
 
-    def timeline_home(self):
-        pass
+        return self.query('comments/subscribe.json', params)
 
-    def timeline_friends(self):
-        pass
+    def timeline_home(self, number=None):
+        """
+            display the last 'n' event from the website
+            :param number: a number between 1 and 100
+            :type number: int
+            :return json data
+        """
+        params = {}
 
-    def timeline_member(self):
-        pass
+        # handle number parameter
+        if number is not None:
+            if not number.isdigit() or  0 == number or not 100 < number:
+                raise Exception('Invalid number parameter')
+            params['number'] = number
 
-    def message_inbox(self):
-        pass
+        return self.query('timeline/home.json', params)
 
-    def message_discussion(self):
-        pass
+    def timeline_friends(self, token, number):
+        """
+            display the timeline of the 'n' last event of the auth'ed member
+            :param token: string the member name
+            :type token: string
+            :param number: number between 1 and 100
+            :type number: int
+            :return json data
+        """
 
-    def message_send_new(self):
-        pass
+        params = {'token': token}
 
-    def message_send_response(self):
-        pass
+        # handle number parameter
+        if number is not None:
+            if not number.isdigit() or  0 == number or not 100 < number:
+                raise Exception('Invalid number parameter')
+            params['number'] = number
 
-    def message_delete(self):
-        pass
+        return self.query('timeline/friends.json', params)
+
+    def timeline_member(self, member, token=None, number=None):
+        """
+            display the timeline of the 'n' last event of the member
+            :param member: the member name
+            :type member: string
+            :param token: string the member name
+            :type token: string
+            :param number: number between 1 and 100
+            :type number: int
+            :return json data
+        """
+
+        params = {}
+
+        # handle token parameter
+        if token is not None:
+            params['token'] = token
+
+        # handle number parameter
+        if number is not None:
+            if not number.isdigit() or  0 == number or not 100 < number:
+                raise Exception('Invalid number parameter')
+            params['number'] = number
+
+        return self.query('timeline/member/' + member + '.json', params)
+
+    def message_inbox(self, token, page=None):
+        """
+            display the inbox by page of 15 messages
+            :param token: string the member name
+            :type token: string
+            :param page: the page number to display
+            :type number: int
+            :return json data
+        """
+        params = {'token': token}
+
+        if page is not None:
+            if not page.isdigit():
+                raise Exception('Invalid page parameter')
+            params['page'] = page
+
+        return self.query('messages/inbox.json', params)
+
+    def message_discussion(self, token, my_id, page=None):
+        """
+            display the discussion from the given id by page of 15 messages
+            :param token: string the member name
+            :type token: string
+            :param id: the id of the discussion
+            :type id: int
+            :param page: number between 1 and 100
+            :type page: int
+            :return json data
+        """
+        params = {'token': token}
+
+        if page is not None:
+            if not page.isdigit():
+                raise Exception('Invalid page parameter')
+            params['page'] = page
+
+        return self.query('messages/discussion/' + my_id + '.json', params)
+
+    def message_send_new(self, token, title, text, recipient):
+        """
+            send a response to the discussion
+            :param token: string the member name
+            :type token: string
+            :param title: string the title of discussion
+            :type title: string
+            :param text: string the discussion
+            :type text: string
+            :param recipient: string recipient
+            :type recipient: string
+            :return json data
+        """
+        params = {
+            'token': token,
+            'title': title,
+            'text': text,
+            'recipient': recipient}
+
+        return self.query('messages/send.json', params, 'post')
+
+    def message_send_response(self, token, text, discussion_id):
+        """
+            send a response to the discussion
+            :param token: string the member name
+            :type token: string
+            :param text: string the discussion
+            :type text: string
+            :param discussion_id: the id of the discussion
+            :type discussion_id: int
+            :return json data
+        """
+        params = {
+            'token': token,
+            'text': text,
+            'discussion_id': discussion_id}
+
+        return self.query('messages/send.json', params, 'post')
+
+    def message_delete(self, token, my_id):
+        """
+            delete the given message by its ID
+            :param token: string the member name
+            :type token: string
+            :param id: the id of the discussion
+            :type id: int
+            :return json data
+        """
+        params = {'token': token}
+
+        return self.query('messages/delete/' + my_id + '.json', params)
