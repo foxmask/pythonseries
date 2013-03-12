@@ -25,7 +25,7 @@ def get_token():
 def do_action(options):
 
     data = {}
-    if options.shows_search:
+    if hasattr(options, 'shows_search'):
         """
         show_search wrapper
         """
@@ -38,7 +38,7 @@ def do_action(options):
                                  data['shows'][show]['title'])
         else:
             print "title mandatory"
-    elif options.shows_display:
+    elif hasattr(options, 'shows_display'):
         """
         show_display wrapper
         """
@@ -55,9 +55,7 @@ def do_action(options):
                 print "%s sur %s" % (season, ep)
         else:
             print "url of the serie is mandatory"
-        # all the data
-        # print data
-    elif options.shows_episodes:
+    elif hasattr(options, 'shows_episodes'):
         """
         shows_episodes wrapper
         """
@@ -92,46 +90,46 @@ def do_action(options):
                         ttl = data['seasons'][season]['episodes'][ep]['title']
                         print "Number: {number} Title: {title} ".\
                         format(number=num, title=ttl)
-#    elif options.add:
+#    elif hasattr(options, 'add:
 #        """
 #        shows_add wrapper
 #        """
 #        print "you want to add a file to your account"
 #        data = c.shows_add(get_token())
-#    elif options.remove:
+#    elif hasattr(options, 'remove:
 #        """
 #        shows_remove wrapper
 #        """
 #        print "you want to remove a file to your account"
 #        data = c.shows_remove(get_token())
-#    elif options.recommend:
+#    elif hasattr(options, 'recommend:
 #        """
 #        shows_recommend wrapper
 #        """
 #        print "you want to recommend a file to a friend"
 #        data = c.shows_recommend(get_token())
 #        print data
-#    elif options.archive:
+#    elif hasattr(options, 'archive:
 #        """
 #        shows_archive wrapper
 #        """
 #        print "you want to archive a serie"
 #        data = c.shows_archive(get_token())
 #        print data
-#    elif options.scrapper:
+#    elif hasattr(options, 'scrapper:
 #        """
 #        shows_scrapper wrapper
 #        """
 #        data = c.shows_scrapper()
 #        print data
-#    elif options.unarchive:
+#    elif hasattr(options, 'unarchive:
 #        """
 #        shows_unarchive wrapper
 #        """
 #        print "you want to get out the serie from your archives"
 #        data = c.shows_unarchive(get_token())
 #        print data
-    elif options.shows_characters:
+    elif hasattr(options, 'shows_characters'):
         """
         shows_characters wrapper
         """
@@ -162,7 +160,7 @@ def do_action(options):
                     the_id = data['characters'][character]['id']
                     print "%8s %s " % (the_id, name)
 
-    elif options.shows_similar:
+    elif hasattr(options, 'shows_similar'):
         if options.url:
             print "you want to find similar series to " + options.url
             data = c.shows_similar(options.url)
@@ -173,7 +171,7 @@ def do_action(options):
                 print u"{title:<30} {url:<20}".format(title=title, url=url)
         else:
             print "url of the serie is mandatory"
-    elif options.shows_videos:
+    elif hasattr(options, 'shows_videos'):
         if options.url:
             print "you want to search videos of serie " + options.url
             params = {}
@@ -203,7 +201,7 @@ def do_action(options):
         else:
             print "url of the serie is mandatory"
 
-    elif options.subtitles_last:
+    elif hasattr(options, 'subtitles_last'):
         """
         subtitles_last wrapper
         """
@@ -245,7 +243,7 @@ def do_action(options):
                              lang=lang,
                              file=my_file)
 
-    elif options.subtitles_show:
+    elif hasattr(options, 'subtitles_show'):
         """
         subtitles_show wrapper
         """
@@ -291,7 +289,7 @@ def do_action(options):
                                  url=url)
         else:
             print "url of the serie is mandatory"
-    elif options.subtitles_show_by_file:
+    elif hasattr(options, 'subtitles_show_by_file'):
         """
         subtitles_show_by_file wrapper
         """
@@ -304,7 +302,7 @@ def do_action(options):
                 print "Error:"
                 print data['errors'][error]['content']
 
-    elif options.planning_general:
+    elif hasattr(options, 'planning_general'):
         """
         planning_general wrapper
         """
@@ -320,7 +318,7 @@ def do_action(options):
             print u"{show:<40} {number:<10} {title:<30}".\
                 format(show=show, number=number, title=title)
 
-    elif options.planning_member:
+    elif hasattr(options, 'planning_member'):
         """
         planning_member wrapper
         """
@@ -336,7 +334,7 @@ def do_action(options):
             print u"{show:<40} {number:<10} {title:<30}".\
                 format(show=show, number=number, title=title)
 
-    elif options.member_is_active:
+    elif hasattr(options, 'member_is_active'):
         """
         member_is_active wrapper
         """
@@ -350,7 +348,7 @@ def do_action(options):
         else:
             print "Member is active"
 
-    elif options.member_infos:
+    elif hasattr(options, 'member_infos'):
         """
         member_infos wrapper
         """
@@ -390,7 +388,7 @@ def do_action(options):
                     print "url " + data['member']['shows'][show]['url'], \
                           "title " + data['member']['shows'][show]['title']
 
-    elif options.members_episodes:
+    elif hasattr(options, 'members_episodes'):
         print "you want to display the 'next' Episodes"
         params = {}
         params['token'] = get_token()
@@ -416,7 +414,7 @@ def do_action(options):
                 print "%s %s %s %s %50s %40s %20s %10s" % \
                 (season, episode, show, lang, my_file, url, source, qty)
 
-    elif options.members_note:
+    elif hasattr(options, 'members_note'):
         if options.note and options.episode and options.season and options.url:
             print "You want to give a note %s to \
 the episode %s (season %s) of the serie %s" % (options.note,
@@ -440,7 +438,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "All parameters are mandatory"
 
-    elif options.members_downloaded:
+    elif hasattr(options, 'members_downloaded'):
         if options.url and options.episode and options.season:
             print "You want to set the episode %s (season %s) of the serie\
  %s as downloaded" % (options.episode, options.season, options.url)
@@ -460,7 +458,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "All parameters are mandatory"
 
-    elif options.members_notifications:
+    elif hasattr(options, 'members_notifications'):
         print "you want to display the notifications "
         params = {'token': get_token()}
         if options.summary:
@@ -490,7 +488,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     print "{date:<10} {seen:<2} {text:<40}".\
                         format(date=my_date, seen=seen, text=text)
 
-    elif options.members_option:
+    elif hasattr(options, 'members_option'):
         if options.option and options.value:
             msg = "You want "
             if options.value == 'read':
@@ -517,7 +515,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "All parameters are mandatory"
 
-    elif options.members_signup:
+    elif hasattr(options, 'members_signup'):
         if options.login and options.password and options.mail:
             params = {'login': options.login,
                       'password': options.password,
@@ -532,7 +530,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "All parameters are mandatory"
 
-    elif options.members_friends:
+    elif hasattr(options, 'members_friends'):
         params = {}
         if options.token:
             params['token'] = get_token()
@@ -550,7 +548,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 for friend in data['friends']:
                     print data['friends'][friend]
 
-    elif options.members_badges:
+    elif hasattr(options, 'members_badges'):
         params = {}
         if options.token:
             params['token'] = get_token()
@@ -570,7 +568,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     description = data['badges'][badge]['description']
                     print "%s -*- %s" % (name, description)
 
-    elif options.members_add:
+    elif hasattr(options, 'members_add'):
         params = {}
         params['token'] = get_token()
         params['login'] = options.login
@@ -582,7 +580,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "member %s added" % options.members_add
 
-    elif options.members_delete:
+    elif hasattr(options, 'members_delete'):
         params = {}
         params['token'] = get_token()
         params['login'] = options.login
@@ -594,7 +592,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "member %s deleted" % options.members_delete
 
-    elif options.members_search:
+    elif hasattr(options, 'members_search'):
         params = {}
         params['login'] = options.login
         data = c.members_search(**params)
@@ -609,7 +607,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 for member in data['members']:
                     print data['members'][member]['login']
 
-    elif options.members_block:
+    elif hasattr(options, 'members_block'):
         params = {}
         params['token'] = get_token()
         params['login'] = options.login
@@ -621,7 +619,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "member %s blocked" % options.members_block
 
-    elif options.members_unblock:
+    elif hasattr(options, 'members_unblock'):
         params = {}
         params['token'] = get_token()
         params['login'] = options.login
@@ -633,7 +631,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print "member %s unblocked" % options.members_unblock
 
-    elif options.members_options:
+    elif hasattr(options, 'members_options'):
         params = {}
         params['token'] = get_token()
         data = c.members_options(**params)
@@ -648,10 +646,10 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     name = data['options'][option][source]['name']
                     print "%s ? %s" % (name, enabled)
 
-    elif options.members_sync:
+    elif hasattr(options, 'members_sync'):
         print "API implemented but no example ready yet"
 
-    elif options.comments_show:
+    elif hasattr(options, 'comments_show'):
         if options.url:
             params = {'url': options.url}
             data = c.comments_show(**params)
@@ -671,7 +669,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                         print "%20s - %14s - %40s" % (login, my_date, text)
         else:
             print "the url of the serie is mandatory"
-    elif options.comments_episode:
+    elif hasattr(options, 'comments_episode'):
         if options.season and options.episode and options.url:
             params = {'url': options.url,
                       'episode': options.episode,
@@ -693,7 +691,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                         print "%20s - %14s - %40s" % (login, my_date, text)
         else:
             print "All parameters are mandatory"
-    elif options.comments_member:
+    elif hasattr(options, 'comments_member'):
         data = c.comments_member(options.login)
         if len(data['errors']) > 0:
             for error in data['errors']:
@@ -708,17 +706,17 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     text = data['comments'][comment]['text']
                     my_date = data['comments'][comment]['date']
                     print "%14s - %40s" % (my_date, text)
-    elif options.comments_post_show:
+    elif hasattr(options, 'comments_post_show'):
         print "API implemented but no example ready yet"
-    elif options.comments_post_episode:
+    elif hasattr(options, 'comments_post_episode'):
         print "API implemented but no example ready yet"
-    elif options.comments_post_member:
+    elif hasattr(options, 'comments_post_member'):
         print "API implemented but no example ready yet"
-    elif options.comments_subscribe:
+    elif hasattr(options, 'comments_subscribe'):
         print "API implemented but no example ready yet"
-    elif options.comments_unsubscribe:
+    elif hasattr(options, 'comments_unsubscribe'):
         print "API implemented but no example ready yet"
-    elif options.timeline_home:
+    elif hasattr(options, 'timeline_home'):
         data = c.timeline_home(options.number)
         if len(data['errors']) > 0:
             for error in data['errors']:
@@ -740,7 +738,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 html = data['timeline'][timeline]['html']
                 print "%12s - %20s - %5s - %20s - %40s - %40s" % \
                 (my_date, login, types, url, html, title)
-    elif options.timeline_friends:
+    elif hasattr(options, 'timeline_friends'):
         data = c.timeline_friends(get_token(), options.number)
         if len(data['errors']) > 0:
             for error in data['errors']:
@@ -764,7 +762,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 html = data['timeline'][timeline]['html']
                 print "%12s - %20s - %5s - %20s - %40s - %40s" % \
                 (my_date, login, types, url, html, title)
-    elif options.timeline_member:
+    elif hasattr(options, 'timeline_member'):
         if options.login:
             params = {'member': options.login}
             if options.login:
@@ -796,7 +794,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     (my_date, login, types, url, html, title)
         else:
             print "login of the member mandatory"
-    elif options.message_inbox:
+    elif hasattr(options, 'message_inbox'):
         params = {'token': get_token()}
         if options.page:
             params['page'] = options.page
@@ -812,7 +810,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 for msg in data['discussions']:
                     print data['discussions'][msg]
 
-    elif options.message_discussion:
+    elif hasattr(options, 'message_discussion'):
         if options.id:
             params = {'token': get_token(),
                       'my_id': options.id}
@@ -831,7 +829,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
                         print data['discussions'][msg]
         else:
             print "ID is mandatory"
-    elif options.message_send_new:
+    elif hasattr(options, 'message_send_new'):
         params = {'token': get_token(),
                   'title': options.title,
                   'text': options.text,
@@ -844,7 +842,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
         else:
             print data
 
-    elif options.message_send_response:
+    elif hasattr(options, 'message_send_response'):
         if options.text and options.id:
             params = {'token': get_token(),
                       'text': options.text,
@@ -853,7 +851,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
             print data
         else:
             print "All parameters are mandatory"
-    elif options.message_delete:
+    elif hasattr(options, 'message_delete'):
         if options.id:
             params = {'token': get_token(), 'my_id': options.id}
             data = c.message_delete(**params)
@@ -868,43 +866,54 @@ the episode %s (season %s) of the serie %s" % (options.note,
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Process some integers.',
+    parser = argparse.ArgumentParser(prog="go",
+                                     usage='%(prog)s [options]',
+                                     description='BetaSeries API Management',
                                      conflict_handler='resolve',
                                      add_help=True)
 
-    group0 = parser.add_argument_group("*** Search series",
-                "use --shows_search --title <title>")
-    group0.add_argument("--shows_search", action="store_true")
-    group0.add_argument("--title", action="store",
+    subparsers = parser.add_subparsers(help='sub-command help')
+    group0 = subparsers.add_parser('shows_search', help='Search series: \
+use --shows_search --title <title>')
+    # group0 = parser.add_argument_group("*** Search series",
+# "use --shows_search --title <title>")
+    group0.add_argument("shows_search", action="store_true",
+                    help='Search series: use --shows_search --title <title>')
+    group0.add_argument("--title", action="store", required=True,
                         help="make a search by title")
 
     # group the options for handling Display of series parameters
-    group1 = parser.add_argument_group("*** Details of series",
-                "use --shows_display --url <url>")
-    group1.add_argument("--shows_display", action="store_true")
-    group1.add_argument("--url", action="store", nargs="+",
+    group1 = subparsers.add_parser("shows_display",
+            help="Details of series: use --shows_display --url <url>")
+    group1.add_argument("shows_display", action="store_true",
+                    help="Details of series : use --shows_display --url <url>")
+    group1.add_argument("--url", action="store", required=True,
                      help="the url/name of the given serie")
 
-    # group the options for handling Episodes parameters
-    group2 = parser.add_argument_group("*** Episodes",
-"use --shows_episodes --url <serie> (--season <num>) (--episode <num>)\
+    group2 = subparsers.add_parser("shows_episodes", help="Show Episodes: use \
+--shows_episodes --url <serie> (--season <num>) (--episode <num>)\
 (--summary) to filter episodes you want to search")
-    group2.add_argument("--shows_episodes", action="store_true")
-    group2.add_argument("--url", action="store", nargs="+",
+    group2.add_argument("shows_episodes", action="store_true", help="Episodes:\
+--shows_episodes --url <serie> (--season <num>) (--episode <num>)\
+(--summary) to filter episodes you want to search")
+    group2.add_argument("--url", action="store", required=True,
                      help="the url of the given serie")
-    group2.add_argument("--episode", action="store", nargs="+",
+    group2.add_argument("--episode", action="store",
                      help="the number of the episode (optional)")
-    group2.add_argument("--season", action="store", nargs="+",
+    group2.add_argument("--season", action="store",
                      help="the number of the season (optional)")
     group2.add_argument("--summary", action="store_true",
                      help="boolean set to false by default, \
                      to only get the summary of the episode (optional)")
 
-    group3 = parser.add_argument_group("*** Characters",
-"use --shows_characters --url <serie> (--summary)\
+    # group the options for handling Characters parameters
+    group3 = subparsers.add_parser("shows_characters", help="Show Characters:\
+ use shows_characters --url <serie> (--summary)\
 (--char_id <num>) to find characters for the series you want to search")
-    group3.add_argument('--shows_characters', action="store_true")
-    group3.add_argument("--url", action="store",
+    group3.add_argument('shows_characters', action="store_true",
+                        help="use shows_characters --url <serie> (--summary)\
+(--char_id <num>) to find characters for the series you want to search")
+    group3.add_argument("--url", action="store", required=True,
                      help="give the name of the serie to get\
  the list of characters of this one")
     group3.add_argument("--summary", action="store_true",
@@ -913,18 +922,23 @@ def main():
     group3.add_argument("--char_id", action="store",
                      help="display info of THIS character (optional)")
 
-    group13 = parser.add_argument_group("*** Similar Shows",
-"use --shows_similar --url <serie> to find similar serie")
-    group13.add_argument('--shows_similar', action="store_true")
-    group13.add_argument("--url", action="store",
+    # group the options for handling Similar shows
+    group13 = subparsers.add_parser("shows_similar", help="Similar Shows:\
+use --shows_similar --url <serie> to find similar serie")
+    group13.add_argument('shows_similar', action="store_true",
+help="Similar Shows: use --shows_similar --url <serie> to find similar serie")
+    group13.add_argument("--url", action="store", required=True,
                      help="give the name of the serie to get similar ones")
 
-    group4 = parser.add_argument_group("*** Videos",
-                        "use --shows_videos --url <serie> (--season <num>)\
+    # group the options for handling Videos parameters
+    group4 = subparsers.add_parser("shows_videos", help="Videos: use \
+shows_videos --url <serie> (--season <num>)\
 (--episode <num> to filter episodes you want to search)")
-    group4.add_argument("--shows_videos", action="store_true")
-    group4.add_argument("--url", action="store",
-                     help="give the name of the video you want to search")
+    group4.add_argument("shows_videos", action="store_true", help="Videos: use\
+ shows_videos --url <serie> (--season <num>)\
+(--episode <num> to filter episodes you want to search)")
+    group4.add_argument("--url", action="store", required=True,
+                     help="give the name of the serie you want to search")
     group4.add_argument("--season", action="store",
                      help="display the list of video of the given season\
 (optional)")
@@ -932,11 +946,14 @@ def main():
                      help="display the list of video of the given episode\
 (optional)")
 
-    group5 = parser.add_argument_group("*** Subtitles",
-"use --subtitles_show --url <serie> --language <lang> --season <num>\
+    group5 = subparsers.add_parser("subtitles_show", help="Subtitles: use \
+ subtitles_show --url <serie> --language <lang> --season <num>\
  --episode <num> to find subtitles you want to search")
-    group5.add_argument("--subtitles_show", action="store_true")
-    group5.add_argument("--url", action="store",
+    group5.add_argument("subtitles_show", action="store_true",
+        help="Subtitles:use subtitles_show --url <serie> \
+        --language <lang> --season <num>\
+ --episode <num> to find subtitles you want to search")
+    group5.add_argument("--url", action="store", required=True,
                     help="give the name of the serie you want to see subtitle")
     group5.add_argument("--language", action="store",
                      help="display the sub for the given language: vo or vf",
@@ -946,40 +963,47 @@ def main():
     group5.add_argument("--episode", action="store",
                      help="display the subtitles of the given episode")
 
-    group6 = parser.add_argument_group("*** Last Subtitles",
-                        "use --subtitles_last --language <lang> --number <num>\
+    group6 = subparsers.add_parser("subtitles_last", help="Last Subtitles: \
+use subtitles_last --language <lang> --number <num>\
  to search subtitle you want to search")
-    group6.add_argument("--subtitles_last", action="store_true")
+    group6.add_argument("subtitles_last", action="store_true")
     group6.add_argument("--language", action="store",
                      help="display the last sub \
 for a given language: vo or vf")
     group6.add_argument("--number", action="store",
                      help="display the 'n' last subtitles")
 
-    group7 = parser.add_argument_group("*** Subtitle by Filename",
-"use --subtitles_show_by_file --my_file <file> --language <lang>\
+    group7 = subparsers.add_parser("subtitles_show_by_file", help="Subtitle \
+by Filename: use subtitles_show_by_file --my_file <file> --language <lang>\
 to search subtitle you want to search")
-    group7.add_argument('--subtitles_show_by_file', action="store_true")
-    group7.add_argument("--my_file", action="store",
+    group7.add_argument('subtitles_show_by_file', action="store_true")
+    group7.add_argument("--my_file", action="store", required=True,
                       help="display the subtitles from a given filename")
     group7.add_argument("--language", action="store",
                      help="filter subtitle for a given language: vo or vf",
                      choices=('vo', 'vf'))
 
-    group8 = parser.add_argument_group("*** Planning General")
-    group8.add_argument("--planning_general", action="store_true",
+    group8 = subparsers.add_parser("planning_general", help="Planning General:\
+ display the general planning")
+    group8.add_argument("planning_general", action="store_true",
                       help="display the general planning")
 
-    group9 = parser.add_argument_group("*** Planning Member")
-    group9.add_argument("--planning_member", action="store_true",
+    group9 = subparsers.add_parser("planning_member", help="Planning Member:\
+ display the planning of the member")
+    group9.add_argument("planning_member", action="store_true",
                       help="display the planning of the member")
 
-    group10 = parser.add_argument_group("*** Member : is he active ?")
-    group10.add_argument("--member_is_active", action="store_true",
+    group10 = subparsers.add_parser("member_is_active", help="Member: \
+is he active ? check if the member is active")
+    group10.add_argument("member_is_active", action="store_true",
                       help="check if the member is active")
 
-    group11 = parser.add_argument_group("*** Member : infos ?")
-    group11.add_argument("--member_infos", action="store_true")
+    group11 = subparsers.add_parser("member_infos", help="Member infos:\
+ use members_infos --login <login> \
+--token (optional) --nodata (optional) --since timestamp date")
+    group11.add_argument("member_infos", action="store_true",
+help="Member: infos ?  use members_infos --login <login> \
+--token (optional) --nodata (optional) --since timestamp date")
     group11.add_argument("--login", action="store",
                       help="get info from the login of the member")
     group11.add_argument("--token", action="store_true",
@@ -989,8 +1013,12 @@ to search subtitle you want to search")
     group11.add_argument("--since", action="store",
                       help="give a timestamp date to get info from it")
 
-    group12 = parser.add_argument_group("*** Member : Episodes ?")
-    group12.add_argument('--members_episodes', action="store_true")
+    group12 = subparsers.add_parser("members_episodes",
+help="Member Episodes: members_episodes --subtitles <all|vovf|vf>\
+ --show <serie> --view <view>")
+    group12.add_argument('members_episodes', action="store_true",
+help="Member : Episodes ? members_episodes --subtitles <all|vovf|vf>\
+ --show <serie> --view <view>")
     group12.add_argument("--subtitles", action="store",
                       help="filter serie with subtitles : all / vovf / vf",
                      choices=('all', 'vovf', 'vf'))
@@ -1001,43 +1029,47 @@ to search subtitle you want to search")
                       help="set a number of next episode to view or just \
 'next' to get the next one")
 
-    group14 = parser.add_argument_group("*** Member : Note ",
-"use --note <note> --url <url> --episode <num> --season <num>.\
+    group14 = subparsers.add_parser("members_note", help="Member Note:\
+use members_note --note <note> --url <url> --episode <num> --season <num>.\
 To give a note to the complet serie put --season 0 and --episode 0")
-    group14.add_argument('--members_note', action="store_true")
-    group14.add_argument("--url", action="store",
+    group14.add_argument('members_note', action="store_true",
+help="Member : Note use members_note --note <note> --url <url> --episode <num>\
+ --season <num>.\ To give a note to the complet serie put --season 0 and\
+ --episode 0")
+    group14.add_argument("--url", action="store", required=True,
                       help="url of the serie to evluate. eg breakingbad not\
                       'Breaking Bad'")
-    group14.add_argument("--episode", action="store",
+    group14.add_argument("--episode", action="store", required=True,
                       help="number of the episode of the serie to evaluate")
-    group14.add_argument("--season", action="store",
+    group14.add_argument("--season", action="store", required=True,
                       help="number of the season of the serie to evaluate")
-    group14.add_argument("--note", action="store",
+    group14.add_argument("--note", action="store", required=True,
                       help="give a note between 1 and 5", choices=range(1, 6),
                       type=int)
 
-    group15 = parser.add_argument_group("*** Member : Downloaded",
-        "use --members_downloaded --url <url> --episode <num> --season <num>.")
-    group15.add_argument('--members_downloaded', action="store_true")
-    group15.add_argument("--url", action="store",
+    group15 = subparsers.add_parser("members_downloaded", help="Member \
+Downloaded: use members_downloaded --url <url> --episode <num> --season <num>.")
+    group15.add_argument('members_downloaded', action="store_true",
+help="Member : Downloaded use members_downloaded --url <url> --episode <num>\
+ --season <num>.")
+    group15.add_argument("--url", action="store", required=True,
                       help="the url of the serie to mark as downloaded\
 eg breakingbad not 'Breaking Bad'")
-    group15.add_argument("--episode", action="store",
+    group15.add_argument("--episode", action="store", required=True,
                       help="the number of the episode to mark as downloaded")
-    group15.add_argument("--season", action="store",
+    group15.add_argument("--season", action="store", required=True,
                       help="the season of the episode to mark as downloaded")
 
-    group16 = parser.add_argument_group("*** Member : Notifications ", \
-                           "use --members_notifications \
---summary=True/False (optional: default False)\
---number <num> (optional)\
---last_id <num> (optional)\
---sort ASC|DESC (optional)\
-dont mix --last_id and --sort\
-or all notifications could not be get")
-
-    group16.add_argument("--members_notifications", action="store_true",
-                      help="the see the notifications")
+    group16 = subparsers.add_parser("members_notifications", help="Member \
+Notifications: use members_notifications \
+ --summary=True/False (optional: default False) --number <num> (optional)\
+ --last_id <num> (optional) --sort ASC|DESC (optional)\
+ dont mix --last_id and --sort or all notifications could not be get")
+    group16.add_argument("members_notifications", action="store_true",
+                    help="Member :Notifications: use members_notifications \
+ --summary=True/False (optional: default False) --number <num> (optional)\
+ --last_id <num> (optional) --sort ASC|DESC (optional)\
+ dont mix --last_id and --sort or all notifications could not be get")
     group16.add_argument("--summary", action="store_true",
                       help="to get only the number of unread notification")
     group16.add_argument("--number", action="store",
@@ -1047,210 +1079,53 @@ or all notifications could not be get")
     group16.add_argument("--sort", action="store",
                       help="to sort the display, use asc or desc")
 
-    group17 = parser.add_argument_group("*** Members : Option ", \
-"use --members_option --options <downloaded|notation|decalage>\
+    group17 = subparsers.add_parser("members_option", help="Members :\
+    Option use members_option --option <downloaded|notation|decalage>\
  --value <read|edit> (mandatory)")
-    group17.add_argument("--members_option", action="store_true")
-    group17.add_argument("--option", action="store",
+    group17.add_argument("members_option", action="store_true",
+    help="Members :Option use members_option\
+     --option <downloaded|notation|decalage>\
+ --value <read|edit> (mandatory)")
+    group17.add_argument("--option", action="store", required=True,
                       help="can be one of <downloaded|notation|decalage>",
                       choices=('downloaded', 'notation', 'decalage'))
-    group17.add_argument("--value", action="store",
+    group17.add_argument("--value", action="store", required=True,
                       help="read : to read options and\
                       edit to modify the option",
                       choices=('edit', 'read'))
 
-    group18 = parser.add_argument_group("*** Members : Signup ", \
-                          "use --members_signup --login <login>\
+    group18 = subparsers.add_parser("members_signup", help="Members Signup\
+ use members_signup --login <login> --password <password> --mail <email>")
+    group18.add_argument("--members_signup", action="store_true",
+        help="Members Signup: use members_signup --login <login>\
  --password <password> --mail <email>")
-
-    group18.add_argument("--members_signup", action="store_true")
-    group18.add_argument("--login", action="store",
+    group18.add_argument("--login", action="store", required=True,
                       help="the login: max 24 chars")
-    group18.add_argument("--password", action="store")
-    group18.add_argument("--mail", action="store")
+    group18.add_argument("--password", action="store", required=True,)
+    group18.add_argument("--mail", action="store", required=True,)
 
-    group19 = parser.add_argument_group("*** Members : Friends ", \
-                          "use --members_friends\
- --token to get the friends of your account (optional) OR\
- --login <login> to get the friends of this member (optional)")
-
-    group19.add_argument("--members_friends", action="store_true")
+    group19 = subparsers.add_parser("members_friends",
+        help="Members Friends: use --members_friends --token \
+to get your friends (optional) OR --login <login> \
+to get the friends of this member (optional)")
+    group19.add_argument("members_friends", action="store_true",
+help="Members Friends: use --members_friends --token \
+to get your friends (optional) OR --login <login> \
+to get the friends of this member (optional)")
     group19.add_argument("--token", action="store_true")
     group19.add_argument("--login", action="store")
 
-    group20 = parser.add_argument_group("*** Members : Badges", \
-                          "use --members_badges\
- --token to get the friends of your account (optional) OR\
- --login <login> to get the friends of this member (optional)")
-
-    group20.add_argument("--members_badges", action="store_true")
+    group20 = subparsers.add_parser("members_badges",
+help="Members Badges: use members_badges --token to get your friends OR\
+ --login <login> to get the friends of this member")
+    group20.add_argument("members_badges", action="store_true",
+help="Members Badges: use members_badges --token to get your friends OR\
+ --login <login> to get the friends of this member")
     group20.add_argument("--token", action="store_true")
     group20.add_argument("--login", action="store")
 
-    group21 = parser.add_argument_group("*** Members : Add",
-                    "give the login of the friend to add")
-    group21.add_argument("--members_add", action="store_true")
-    group21.add_argument("--login", action="store")
-
-    group22 = parser.add_argument_group("*** Members : Delete",
-                    "give the login of the friend to delete")
-    group22.add_argument("--members_delete",
-                       action="store_true")
-    group22.add_argument("--login", action="store")
-
-    group23 = parser.add_argument_group("*** Members : Search",
-                        "get a list of 10 friends starting by this string")
-    group23.add_argument("--members_search", action="store_true")
-    group23.add_argument("--login", action="store")
-
-    group24 = parser.add_argument_group("*** Members : Block",
-                    "give the login of the member to block")
-    group24.add_argument("--members_block", action="store_true")
-    group24.add_argument("--login", action="store")
-
-    group25 = parser.add_argument_group("*** Members : Unblock",
-                                "give the login of the member to unblock")
-    group25.add_argument("--members_unblock", action="store_true")
-    group25.add_argument("--login", action="store")
-
-    group26 = parser.add_argument_group("*** Members : Options",
-                                        "will display your options")
-    group26.add_argument("--members_options", action="store_true")
-    group26.add_argument("--login", action="store")
-
-    group27 = parser.add_argument_group("*** Members : Sync")
-    group27.add_argument("--members_sync",
-                       help="will list your friend from his email\
-you can put several emails seperated by a comma", action="store")
-
-    group28 = parser.add_argument_group("*** Comments : Show",
-                          "display the list of comments of the serie")
-
-    group28.add_argument("--comments_show", action="store_true")
-    group28.add_argument("--url",
-                       help="give the url of the serie eg breakingbad not\
-                       'Breaking Bad'", action="store")
-
-    group29 = parser.add_argument_group("*** Comments : Episode",
-                          "display the list of comments of the serie")
-
-    group29.add_argument("--comments_episode", action="store_true")
-    group29.add_argument("--url",
-                       help="give the url of the serie eg breakingbad not\
-                       'Breaking Bad'", action="store")
-
-    group29.add_argument("--episode", action="store",
-                     help="give the number of the episode you want to read\
-                     comments")
-
-    group29.add_argument("--season", action="store",
-                     help="give the number of the season you want to read\
-                     the comments of the given episode")
-
-    group30 = parser.add_argument_group("*** Comments : Member", \
-                          "display the member's comments")
-
-    group30.add_argument("--comments_member", action="store_true")
-    group30.add_argument("--login",
-                       help="give the name of the member", action="store")
-
-    group31 = parser.add_argument_group("*** Comments : \
-Post a comment to a show")
-    group31.add_argument("--comments_post_show", action="store")
-
-    group32 = parser.add_argument_group("*** Comments : Post a comment\
-to an episode")
-    group32.add_argument("--comments_post_episode", action="store")
-
-    group33 = parser.add_argument_group("*** Comments : Post a comment\
-to a member")
-    group33.add_argument("--comments_post_member", action="store")
-
-    group34 = parser.add_argument_group("*** Comments : \
-    Subscribe to a comment")
-    group34.add_argument("--comments_subscribe", action="store")
-
-    group35 = parser.add_argument_group("*** Comments : \
-    Unsubscribe to a comment")
-    group35.add_argument("--comments_unsubscribe", action="store")
-
-    group36 = parser.add_argument_group("*** Timeline : Home", \
-                          "display the last events of the website")
-
-    group36.add_argument("--timeline_home", action="store_true")
-    group36.add_argument("--number",
-                       choices=range(1, 101),
-                       help="give the number between 1 to 100", action="store")
-
-    group37 = parser.add_argument_group("*** Timeline : Friends", \
-                          "display the last events of your friends")
-
-    group37.add_argument("--timeline_friends", action="store_true")
-    group37.add_argument("--number",
-                       choices=range(1, 101), type=int,
-                       help="give the number between 1 to 100", action="store")
-
-    group38 = parser.add_argument_group("*** Timeline : Member", \
-                          "display the last events of a member")
-    group38.add_argument("--timeline_member", action="store_true")
-    group38.add_argument("--number",
-                       choices=range(1, 101), type=int,
-                       help="give the number between 1 to 100", action="store")
-    group38.add_argument("--login",
-                       help="give login of your friend (mandatory)",
-                       action="store")
-    group38.add_argument("--token",
-                       help="to use your token", action="store_true")
-
-    group39 = parser.add_argument_group("*** Message : Inbox",
-                                        "display your inbox")
-    group39.add_argument("--message_inbox", action="store_true")
-    group39.add_argument("--page",
-                      help="give the number of the page (optional)",
-                      action="store")
-
-    group40 = parser.add_argument_group("*** Message : Discussion", \
-"display the given discussion")
-    group40.add_argument("--message_discussion", action="store_true")
-    group40.add_argument("--id",
-                       help="give the id of the discussion to display",
-                       action="store")
-    group40.add_argument("--page",
-                       help="give the number of the page (optional)",
-                       action="store")
-
-    group41 = parser.add_argument_group("*** Message: Send a new discussion", \
-"send a new discussion")
-    group41.add_argument("--message_send_new", action="store_true")
-    group41.add_argument("--title",
-                       help="give the title of the discussion",
-                       action="store")
-    group41.add_argument("--text",
-                       help="give the text of the discussion",
-                       action="store")
-    group41.add_argument("--recipient",
-                       help="give the name of the member who'll received it",
-                       action="store")
-
-    group42 = parser.add_argument_group("*** Message: Send a response",
-"send a response")
-    group42.add_argument("--message_send_response", action="store_true")
-    group42.add_argument("--id",
-                       help="give the id of the discusion you're responding",
-                       action="store")
-    group42.add_argument("--text",
-                       help="give the text of the response",
-                       action="store")
-
-    group43 = parser.add_argument_group("*** Message : Delete",
-"delete a message")
-    group43.add_argument("--message_delete", action="store_true")
-    group43.add_argument("--id",
-                       help="give the id of the discusion to delete",
-                       action="store")
-
     args = parser.parse_args()
-    print args
+
     if len(sys.argv) > 1:
         do_action(args)
     else:
