@@ -898,11 +898,12 @@ to return
             :type number: int
             :return json data
         """
+
         params = {}
 
         # handle number parameter
         if number is not None:
-            if not number.isdigit() or  0 == number or not 100 < number:
+            if 0 == number or 101 < number:
                 raise Exception('Invalid number parameter')
             params['number'] = number
 
@@ -922,7 +923,7 @@ to return
 
         # handle number parameter
         if number is not None:
-            if not number.isdigit() or  0 == number or not 100 < number:
+            if 0 == number or 101 < number:
                 raise Exception('Invalid number parameter')
             params['number'] = number
 
@@ -948,7 +949,7 @@ to return
 
         # handle number parameter
         if number is not None:
-            if not number.isdigit() or  0 == number or not 100 < number:
+            if 0 == number or not 101 < number:
                 raise Exception('Invalid number parameter')
             params['number'] = number
 
