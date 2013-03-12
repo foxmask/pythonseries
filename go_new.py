@@ -875,7 +875,7 @@ def main():
     subparsers = parser.add_subparsers(help='sub-command help')
     group0 = subparsers.add_parser('shows_search', help='Search series: \
 use --shows_search --title <title>')
-    # group0 = parser.add_argument_group("*** Search series",
+    # group0 = subparsers.add_parser(help="Search series",
 # "use --shows_search --title <title>")
     group0.add_argument("shows_search", action="store_true",
                     help='Search series: use --shows_search --title <title>')
@@ -1048,7 +1048,7 @@ help="Member : Note use members_note --note <note> --url <url> --episode <num>\
                       type=int)
 
     group15 = subparsers.add_parser("members_downloaded", help="Member \
-Downloaded: use members_downloaded --url <url> --episode <num> --season <num>.")
+Downloaded: use members_downloaded --url <url> --episode <num> --season <num>")
     group15.add_argument('members_downloaded', action="store_true",
 help="Member : Downloaded use members_downloaded --url <url> --episode <num>\
  --season <num>.")
@@ -1123,6 +1123,189 @@ help="Members Badges: use members_badges --token to get your friends OR\
  --login <login> to get the friends of this member")
     group20.add_argument("--token", action="store_true")
     group20.add_argument("--login", action="store")
+
+    group21 = subparsers.add_parser("members_add",
+        help="Members Add: give the login of the friend to add")
+    group21.add_argument("members_add", action="store_true",
+        help="Members Add: give the login of the friend to add")
+    group21.add_argument("--login", action="store", required=True)
+
+    group22 = subparsers.add_parser("members_delete",
+            help="Members Delete: give the login of the friend to delete")
+    group22.add_argument("members_delete",
+            help="Members Delete: give the login of the friend to delete",
+                       action="store_true")
+    group22.add_argument("--login", action="store", required=True)
+
+    group23 = subparsers.add_parser("members_search", help="Members Search \
+get a list of 10 friends starting by this string, use members_search\
+ --login <login>")
+    group23.add_argument("members_search",
+        help="Members Search get a list of 10 friends starting by this string",
+                         action="store_true")
+    group23.add_argument("--login", action="store", required=True)
+
+    group24 = subparsers.add_parser("members_block", help="Members Block:\
+ give the login of the member to block, use members_block --login <login>")
+    group24.add_argument("members_block", action="store_true")
+    group24.add_argument("--login", action="store", required=True)
+
+    group25 = subparsers.add_parser("members_unblock", help="Members Unblock:\
+ give the login of the member to unblock")
+    group25.add_argument("members_unblock", action="store_true")
+    group25.add_argument("--login", action="store", required=True)
+
+    group26 = subparsers.add_parser("members_options", help="Members Options:\
+ will display your own options : use members_options")
+    group26.add_argument("members_options", action="store_true",
+    help="Members Options: will display your own options")
+
+    group27 = subparsers.add_parser("members_sync", help="Members Sync:\
+ will list your friend from his email you can put several\
+ emails seperated by a comma")
+    group27.add_argument("members_sync",
+                       help="will list your friend from his email\
+you can put several emails seperated by a comma", action="store", nargs="+")
+
+    group28 = subparsers.add_parser("comments_show", help="Comments Show:\
+display the list of comments of the serie : use comments_show --url <url>")
+    group28.add_argument("comments_show", action="store_true")
+    group28.add_argument("--url",
+                       help="give the url of the serie eg breakingbad not\
+                       'Breaking Bad'", action="store")
+
+    group29 = subparsers.add_parser("comments_episode",
+    help="Comments Episode: display the list of comments of the serie : \
+    use comments_episode  --url <url> --episode <episde> --season <season>")
+    group29.add_argument("comments_episode", action="store_true")
+    group29.add_argument("--url", required=True,
+                       help="give the url of the serie eg breakingbad not\
+                       'Breaking Bad'", action="store")
+    group29.add_argument("--episode", action="store", required=True,
+                     help="give the number of the episode you want to read\
+                     comments")
+    group29.add_argument("--season", action="store", required=True,
+                     help="give the number of the season you want to read\
+                     the comments of the given episode")
+
+    group30 = subparsers.add_parser("comments_member", help="Comments Member\
+ display the member's comments : use comments_member  --login <login>")
+    group30.add_argument("--comments_member", action="store_true")
+    group30.add_argument("--login",
+                       help="give the name of the member", action="store")
+
+    group31 = subparsers.add_parser("comments_post_show", help="Comments \
+    Post Show : add a comment to a show : use comments_post_episode ")
+    group31.add_argument("comments_post_show", action="store",
+     help="Comments Post Show : add a comment to a show")
+
+    group32 = subparsers.add_parser("comments_post_episode", help="Comments \
+Post a comment to an episode, use comments_post_episode")
+    group32.add_argument("comments_post_episode", action="store",
+    help="Post a comment to an episode")
+
+    group33 = subparsers.add_parser("comments_post_member", help="Comments \
+Post a comment to a member : use comments_post_member")
+    group33.add_argument("comments_post_member", action="store",
+                         help="Post a comment to a member")
+
+    group34 = subparsers.add_parser("comments_subscribe", help="Comments \
+Subscribe to a comment : use comments_subscribe")
+    group34.add_argument("comments_subscribe", action="store",
+                         help="Subscribe to a comment")
+
+    group35 = subparsers.add_parser("comments_unsubscribe", help="Comments \
+Unsubscribe to a comment : use comments_unsubscribe")
+    group35.add_argument("comments_unsubscribe", action="store",
+                         help="Unsubscribe to a comment")
+
+    group36 = subparsers.add_parser("timeline_home", help="Timeline Home\
+ display the last events of the website : use --timeline_home --number <num>\
+ from 1 to 100 to limit the number of event")
+    group36.add_argument("timeline_home", action="store_true",
+    help="Timeline Home display the last events of the website")
+    group36.add_argument("--number",
+                       choices=range(1, 101),
+                       help="give the number between 1 to 100", action="store")
+
+    group37 = subparsers.add_parser("timeline_friends", help="Timeline Friends\
+ display the last events of your friends : use timeline_friends --number <num>\
+ from 1 to 100 to limit the number of event")
+
+    group37.add_argument("--timeline_friends", action="store_true",
+        help="Timeline Friends display the last events of your friends")
+    group37.add_argument("--number",
+                       choices=range(1, 101), type=int,
+                       help="give the number between 1 to 100", action="store")
+
+    group38 = subparsers.add_parser("timeline_member", help="Timeline Member \
+display the last events of a member : use timeline_member --number <num>\
+ from 1 to 100 --login <login> --token")
+    group38.add_argument("timeline_member", action="store_true",
+        help="Timeline Member display the last events of a member")
+    group38.add_argument("--number",
+                       choices=range(1, 101), type=int,
+                       help="give the number between 1 to 100", action="store")
+    group38.add_argument("--login",
+                       help="give login of your friend (mandatory)",
+                       action="store")
+    group38.add_argument("--token",
+                    help="to use your token and display your own timeline",
+                    action="store_true")
+
+    group39 = subparsers.add_parser("message_inbox", help="Message Inbox\
+ display your inbox : message_inbox --page <page> (optional)")
+    group39.add_argument("message_inbox", action="store_true",
+                         help="Message Inbox display your inbox")
+    group39.add_argument("--page",
+                      help="give the number of the page (optional)",
+                      action="store")
+
+    group40 = subparsers.add_parser("message_discussion",
+        help="Message Discussion: display the given discussion : \
+        use message_discussion --id <id> --page <page> (optional)")
+    group40.add_argument("--message_discussion", action="store_true",
+                help="Message Discussion: display the given discussion")
+    group40.add_argument("--id", required=True,
+                       help="give the id of the discussion to display",
+                       action="store")
+    group40.add_argument("--page",
+                       help="give the number of the page (optional)",
+                       action="store")
+
+    group41 = subparsers.add_parser("message_send_new", help="Message Send: \
+send a new discussion : use message_send_new --title <title> --text <text>\
+--recipient <recipient>")
+    group41.add_argument("message_send_new", action="store_true",
+                         help="Send a new discussion")
+    group41.add_argument("--title", required=True,
+                       help="give the title of the discussion",
+                       action="store")
+    group41.add_argument("--text", required=True,
+                       help="give the text of the discussion",
+                       action="store")
+    group41.add_argument("--recipient", required=True,
+                       help="give the name of the member who'll received it",
+                       action="store")
+
+    group42 = subparsers.add_parser("message_send_response",
+        help="Message Send : send a response : use message_send_response\
+         --id <id> --text <text>")
+    group42.add_argument("message_send_response", action="store_true",
+                help="Message Send : send a response to a given id message ")
+    group42.add_argument("--id", required=True,
+                       help="give the id of the discusion you're responding",
+                       action="store")
+    group42.add_argument("--text", required=True,
+                       help="give the text of the response",
+                       action="store")
+
+    group43 = subparsers.add_parser("message_delete", help="Message Delete\
+ delete a message : use message_delete --id <id>")
+    group43.add_argument("message_delete", action="store_true")
+    group43.add_argument("--id", required=True,
+                       help="give the id of the discusion to delete",
+                       action="store")
 
     args = parser.parse_args()
 
