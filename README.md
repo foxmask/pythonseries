@@ -20,12 +20,19 @@ key=
 
 Running:
 -------
-Then run :
+Then, to see what commands are available for the moment,  run :
 
+if you use optparse : 
 ```python
 python go.py -h 
 ```
-to see what commands are available for the moment.
+
+if you use argparse:  
+```python
+python go_new.py -h 
+```
+
+I recommend the second one as the help page is clearer ;)
 
 Conclusion:
 -----------
