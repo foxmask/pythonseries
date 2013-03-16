@@ -189,7 +189,7 @@ class Client(object):
         """
         return self.query('shows/archive/' + url + '.json', {'token': token})
 
-    def shows_scrapper(self, my_file):
+    def shows_scraper(self, my_file):
         """
             Send the scrapper to find the serie, ID, number of episode
             :param my_file: try to find a serie from the given file

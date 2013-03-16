@@ -75,7 +75,7 @@ def do_action(options):
                 params['summary'] = options.summary
 
             data = c.shows_episodes(**params)
-            # oops we try to find a serie that does not exist
+
             if 'seasons' not in data.keys() > 0:
                 for error in data['errors']:
                     print "Error:"
@@ -90,45 +90,77 @@ def do_action(options):
                         ttl = data['seasons'][season]['episodes'][ep]['title']
                         print "Number: {number} Title: {title} ".\
                         format(number=num, title=ttl)
-#    elif hasattr(options, 'add:
-#        """
-#        shows_add wrapper
-#        """
-#        print "you want to add a file to your account"
-#        data = c.shows_add(get_token())
-#    elif hasattr(options, 'remove:
-#        """
-#        shows_remove wrapper
-#        """
-#        print "you want to remove a file to your account"
-#        data = c.shows_remove(get_token())
-#    elif hasattr(options, 'recommend:
-#        """
-#        shows_recommend wrapper
-#        """
-#        print "you want to recommend a file to a friend"
-#        data = c.shows_recommend(get_token())
-#        print data
-#    elif hasattr(options, 'archive:
-#        """
-#        shows_archive wrapper
-#        """
-#        print "you want to archive a serie"
-#        data = c.shows_archive(get_token())
-#        print data
-#    elif hasattr(options, 'scrapper:
-#        """
-#        shows_scrapper wrapper
-#        """
-#        data = c.shows_scrapper()
-#        print data
-#    elif hasattr(options, 'unarchive:
-#        """
-#        shows_unarchive wrapper
-#        """
-#        print "you want to get out the serie from your archives"
-#        data = c.shows_unarchive(get_token())
-#        print data
+    elif hasattr(options, 'shows_add'):
+        """
+        shows_add wrapper
+        """
+        print "you want to add a show to your account %s " % options.url
+        data = c.shows_add(options.url, get_token())
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "show %s added to your account" % options.url
+    elif hasattr(options, 'shows_remove'):
+        """
+        shows_remove wrapper
+        """
+        print "you want to remove a show to your account %s " % options.url
+        data = c.shows_remove(options.url, get_token())
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "show %s removed from your account" % options.url
+    elif hasattr(options, 'shows_recommend'):
+        """
+        shows_recommend wrapper
+        """
+        print "you want to recommend %s to a %s" % (options.url, options.login)
+        data = c.shows_recommend(options.url, get_token(), options.login)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "show %s recommended to %s" % (options.url, options.login)
+    elif hasattr(options, 'shows_archive'):
+        """
+        shows_archive wrapper
+        """
+        print "you want to archive %s " % options.url
+        data = c.shows_archive(options.url, get_token())
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "show %s archived" % options.url
+    elif hasattr(options, 'shows_scraper'):
+        """
+        shows_scraper wrapper
+        """
+        data = c.shows_scraper(options.file)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print data
+    elif hasattr(options, 'shows_unarchive'):
+        """
+        shows_unarchive wrapper
+        """
+        print "you want to get out the serie from your archives"
+        data = c.shows_unarchive(options.url, get_token())
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "show %s unarchived" % options.url
     elif hasattr(options, 'shows_characters'):
         """
         shows_characters wrapper
@@ -149,7 +181,6 @@ def do_action(options):
 
             data = c.shows_characters(**params)
 
-            # oops we try to find a serie that does not exist
             if 'characters' not in data.keys() > 0:
                 for error in data['errors']:
                     print "Error:"
@@ -185,14 +216,11 @@ def do_action(options):
 
             data = c.shows_videos(**params)
 
-            # oops we try to find a serie that does not exist
             if 'videos' not in data.keys() > 0:
                 for error in data['errors']:
                     print "Error:"
                     print data['errors'][error]['content']
             else:
-                # all the data
-                # print data
                 print "title %14s - youtube id %10s" % (' ', ' ')
                 for video in data['videos']:
                     print "%20s - %10s" % \
@@ -216,7 +244,6 @@ def do_action(options):
 
         data = c.subtitles_last(**params)
 
-        # oops we try to find a serie that does not exist
         if 'subtitles' not in data.keys() > 0:
             for error in data['errors']:
                 print "Error:"
@@ -261,7 +288,6 @@ def do_action(options):
 
             data = c.subtitles_show(**params)
 
-            # oops we try to find a serie that does not exist
             if 'subtitles' not in data.keys() > 0:
                 for error in data['errors']:
                     print "Error:"
@@ -813,7 +839,8 @@ the episode %s (season %s) of the serie %s" % (options.note,
     elif hasattr(options, 'message_discussion'):
         if options.id:
             params = {'token': get_token(),
-                      'my_id': options.id}
+                      'myof the show you want to archive to\
+ your account_id': options.id}
             if options.page:
                 params['page'] = options.page
             data = c.message_discussion(**params)
@@ -905,6 +932,56 @@ use --shows_search --title <title>')
     group2.add_argument("--summary", action="store_true",
                      help="boolean set to false by default, \
                      to only get the summary of the episode (optional)")
+
+    group44 = subparsers.add_parser("shows_add", help="Shows : add\
+ add a show --url <url>")
+    group44.add_argument("shows_add", action="store_true")
+    group44.add_argument("--url", required=True,
+                       help="give the url of the shows you want to add to\
+your account", action="store")
+
+    group45 = subparsers.add_parser("shows_remove", help="Shows : remove\
+ a show --url <url> from your account")
+    group45.add_argument("shows_remove", action="store_true",
+                help="Shows : remove a show --url <url> from your account")
+    group45.add_argument("--url", required=True,
+                       help="give the url of the show you want to remove from\
+ your account", action="store")
+
+    group46 = subparsers.add_parser("shows_recommend", help="Shows : recommend\
+ a show --url <url> to a friend  --login <login>")
+    group46.add_argument("shows_recommend", action="store_true",
+ help="Shows : recommend a show --url <url> to a friend --login <login>")
+    group46.add_argument("--url", required=True,
+                       help="give the url of the show you want to recommend",
+                       action="store")
+    group46.add_argument("--login", required=True,
+                       help="give the login of your friend", action="store")
+
+    group47 = subparsers.add_parser("shows_archive", help="Shows : archive\
+ a show --url <url> to your account")
+    group47.add_argument("shows_archive", action="store_true",
+                    help="Shows : archive a show --url <url> to your account")
+    group47.add_argument("--url", required=True,
+                       help="give the url of the show you want to archive to\
+ your account", action="store")
+
+    group48 = subparsers.add_parser("shows_scraper", help="Shows : request the\
+ scraper from a filename to get the episode details --file <file>")
+    group48.add_argument("shows_scraper", action="store_true",
+                        help="Shows : request the\
+ scraper from a filename to get the episode details --file <file>")
+    group48.add_argument("--file", required=True,
+                       help="give the filename to get the episode details",
+                       action="store")
+
+    group49 = subparsers.add_parser("shows_unarchive", help="Shows : unarchive\
+ a show --url <url> to your account")
+    group49.add_argument("shows_unarchive", action="store_true",
+                help="Shows : unarchive a show --url <url> from your account")
+    group49.add_argument("--url", required=True,
+                       help="give the url of the show you want to unarchive\
+ from your account", action="store")
 
     # group the options for handling Characters parameters
     group3 = subparsers.add_parser("shows_characters", help="Show Characters:\
