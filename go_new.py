@@ -839,8 +839,7 @@ the episode %s (season %s) of the serie %s" % (options.note,
     elif hasattr(options, 'message_discussion'):
         if options.id:
             params = {'token': get_token(),
-                      'myof the show you want to archive to\
- your account_id': options.id}
+                      'my_id': options.id}
             if options.page:
                 params['page'] = options.page
             data = c.message_discussion(**params)
