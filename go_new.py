@@ -673,7 +673,14 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     print "%s ? %s" % (name, enabled)
 
     elif hasattr(options, 'members_sync'):
-        print "API implemented but no example ready yet"
+        data = c.members_sync(get_token(), options.members_sync)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            for member in data['members']:
+                print data['membes'][member]
 
     elif hasattr(options, 'comments_show'):
         if options.url:
@@ -709,14 +716,18 @@ the episode %s (season %s) of the serie %s" % (options.note,
                 if len(data['comments']) == 0:
                     print "no comment"
                 else:
-                    print "%20s - %14s - %40s" % ('Login', 'Date', 'Text')
+                    print "%6s - %20s - %14s - %40s" % \
+                            ('Comment', 'Login', 'Date', 'Text')
                     for comment in data['comments']:
                         text = data['comments'][comment]['text']
                         my_date = data['comments'][comment]['date']
                         login = data['comments'][comment]['login']
-                        print "%20s - %14s - %40s" % (login, my_date, text)
+                        c_id = data['comments'][comment]['inner_id']
+                        print "%6s - %20s - %14s - %40s" % \
+                                (c_id, login, my_date, text)
         else:
             print "All parameters are mandatory"
+
     elif hasattr(options, 'comments_member'):
         data = c.comments_member(options.login)
         if len(data['errors']) > 0:
@@ -732,16 +743,73 @@ the episode %s (season %s) of the serie %s" % (options.note,
                     text = data['comments'][comment]['text']
                     my_date = data['comments'][comment]['date']
                     print "%14s - %40s" % (my_date, text)
+
     elif hasattr(options, 'comments_post_show'):
-        print "API implemented but no example ready yet"
+        in_reply_to = None
+        if options.in_reply_to:
+            in_reply_to = options.in_reply_to
+
+        params = {'token': get_token(), 'show': options.show,
+                  'text': options.text, 'in_reply_to': in_reply_to}
+        data = c.comments_post_show(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print data
+
     elif hasattr(options, 'comments_post_episode'):
-        print "API implemented but no example ready yet"
+        in_reply_to = None
+        if options.in_reply_to:
+            in_reply_to = options.in_reply_to
+
+        params = {'token': get_token(), 'show': options.show,
+                  'text': options.text, 'season': options.season,
+                  'episode': options.episode, 'in_reply_to': in_reply_to}
+        data = c.comments_post_episode(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print data
+
     elif hasattr(options, 'comments_post_member'):
-        print "API implemented but no example ready yet"
+        in_reply_to = None
+        if options.in_reply_to:
+            in_reply_to = options.in_reply_to
+
+        params = {'token': get_token(), 'member': options.member,
+                  'text': options.text, 'in_reply_to': in_reply_to}
+        data = c.comments_post_member(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print data
+
     elif hasattr(options, 'comments_subscribe'):
-        print "API implemented but no example ready yet"
+        params = {'token': get_token(), 'ref_id': options.refid}
+        data = c.comments_subscribe(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "comments subscribed"
+
     elif hasattr(options, 'comments_unsubscribe'):
-        print "API implemented but no example ready yet"
+        params = {'token': get_token(), 'ref_id': options.refid}
+        data = c.comments_unsubscribe(**params)
+        if len(data['errors']) > 0:
+            for error in data['errors']:
+                print "Error:"
+                print data['errors'][error]['content']
+        else:
+            print "comments unsubscribed"
+
     elif hasattr(options, 'timeline_home'):
         data = c.timeline_home(options.number)
         if len(data['errors']) > 0:
@@ -1271,29 +1339,61 @@ display the list of comments of the serie : use comments_show --url <url>")
                        help="give the name of the member", action="store")
 
     group31 = subparsers.add_parser("comments_post_show", help="Comments \
-    Post Show : add a comment to a show : use comments_post_episode ")
-    group31.add_argument("comments_post_show", action="store",
-     help="Comments Post Show : add a comment to a show")
+ Post Show : add a comment to a show : use comments_post_show\
+--show <name> --text <string> --in_reply_to <num>")
+    group31.add_argument("comments_post_show", action="store_true",
+                         help="Comments Post Show : add a comment to a show")
+    group31.add_argument("--show", action="store", required=True,
+                         help="give the name of the show")
+    group31.add_argument("--text", action="store", required=True,
+                        help="Put your comment")
+    group31.add_argument("--in_reply_to", action="store",
+                         help="put the reply id you want to answer")
 
     group32 = subparsers.add_parser("comments_post_episode", help="Comments \
-Post a comment to an episode, use comments_post_episode")
-    group32.add_argument("comments_post_episode", action="store",
+Post a comment to an episode, use comments_post_episode\
+--show <name> --text <string> --in_reply_to <num>\
+--season <num> --episode <num>")
+    group32.add_argument("comments_post_episode", action="store_true",
     help="Post a comment to an episode")
+    group32.add_argument("--show", action="store", required=True,
+                         help="give the name of the show")
+    group32.add_argument("--text", action="store", required=True,
+                        help="Put your comment")
+    group32.add_argument("--episode", action="store", required=True,
+                     help="give the number of the episode you want to post\
+                     a comment")
+    group32.add_argument("--season", action="store", required=True,
+                     help="give the number of the season you want to post\
+                     a comment of the given episode")
+    group32.add_argument("--in_reply_to", action="store",
+                         help="put the reply id you want to answer")
 
     group33 = subparsers.add_parser("comments_post_member", help="Comments \
-Post a comment to a member : use comments_post_member")
-    group33.add_argument("comments_post_member", action="store",
+Post a comment to a member : use comments_post_member --member <login>\
+--text <string> --in_reply_to <num>")
+    group33.add_argument("comments_post_member", action="store_true",
                          help="Post a comment to a member")
+    group33.add_argument("--member", action="store", required=True,
+                         help="give the name of the member")
+    group33.add_argument("--text", action="store", required=True,
+                        help="Put your comment")
+    group33.add_argument("--in_reply_to", action="store",
+                         help="put the reply id you want to answer")
 
     group34 = subparsers.add_parser("comments_subscribe", help="Comments \
-Subscribe to a comment : use comments_subscribe")
-    group34.add_argument("comments_subscribe", action="store",
+Subscribe to a comment : use comments_subscribe --refid <num>")
+    group34.add_argument("comments_subscribe", action="store_true",
                          help="Subscribe to a comment")
+    group34.add_argument("--refid", action="store", required=True,
+                help="give the refid of the comment you want to subscribe")
 
     group35 = subparsers.add_parser("comments_unsubscribe", help="Comments \
-Unsubscribe to a comment : use comments_unsubscribe")
-    group35.add_argument("comments_unsubscribe", action="store",
+Unsubscribe to a comment : use comments_unsubscribe --refid <num>")
+    group35.add_argument("comments_unsubscribe", action="store_true",
                          help="Unsubscribe to a comment")
+    group35.add_argument("--refid", action="store", required=True,
+                help="give the refid of the comment you want to unsubscribe")
 
     group36 = subparsers.add_parser("timeline_home", help="Timeline Home\
  display the last events of the website : use --timeline_home --number <num>\

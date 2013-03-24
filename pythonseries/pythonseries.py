@@ -869,7 +869,7 @@ to return
             subscribe to the comment of the given ref by mail
             :param token : token of the authenticated member
             :type token: string
-            :param ref_id : the ref_id
+            :param ref_id : the ref_id of the comment to subscribe
             :type ref_id: int
             :return json data
         """
