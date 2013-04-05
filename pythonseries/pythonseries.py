@@ -366,7 +366,7 @@ class Client(object):
             params['token'] = token
 
         # handle view parameter
-        if unseen_only == True:
+        if unseen_only:
             params['view'] = 'unseen'
 
         return self.query(url, params)
@@ -453,7 +453,7 @@ class Client(object):
             params['token'] = token
 
         # handle nodata parameter
-        if nodata == True:
+        if nodata:
             params['nodata'] = 1
 
         # handle since parameter
@@ -577,7 +577,7 @@ to return
         params = {'token': token}
 
         # handle sumary parameter
-        if summary == True:
+        if summary:
             params['summary'] = 'yes'
 
         # handle number parameter
