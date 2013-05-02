@@ -3,7 +3,9 @@ pythonseries
 
 The original script from JEDIBC is made in PHP.
 
-This is a python version for hiw own need and is totaly free to use ;)
+This is a python version for his own need and is totaly free to use ;)
+
+this lib use the BetaSeries API. 
 
 Configuration:
 --------------
